@@ -12,6 +12,7 @@ services:
             PGID: 1000
             TZ: America/Phoenix
         restart: unless-stopped
+
     plex:
         image: linuxserver/plex
         container_name: plex
@@ -26,6 +27,7 @@ services:
             TZ: America/Phoenix
             VERSION: public
         restart: unless-stopped
+
     tautulli:
         depends_on:
             - plex
@@ -40,6 +42,7 @@ services:
             PGID: 1000
             TZ: America/Phoenix
         restart: unless-stopped
+
     ombi:
         depends_on:
             - plex
@@ -54,6 +57,7 @@ services:
             PGID: 1000
             TZ: America/Phoenix
         restart: unless-stopped
+        
     airsonic:
         image: linuxserver/airsonic
         container_name: airsonic
@@ -67,6 +71,21 @@ services:
             PGID: 1000
             TZ: America/Phoenix
         restart: unless-stopped
+
+    beets:
+        image: linuxserver/beets
+        container_name: beets
+        volumes:
+            - $HOME/docker/beets/config:/config
+            - $HOME/Music
+        ports:
+            - "8337:8337"
+        environment:
+            PUID: 1000
+            PGID: 1000
+            TZ: America/Phoenix
+        restart: unless-stopped
+
 #    letsencrypt:
 #        image: linuxserver/letsencrypt
 #        container_name: letsencrypt
