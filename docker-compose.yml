@@ -76,8 +76,9 @@ services:
         image: linuxserver/beets
         container_name: beets
         volumes:
-            - $HOME/docker/beets/config:/config
-            - $HOME/Music
+            - ~/docker/beets/config:/config
+            - ~/Music:/music
+            - ~/Downloads:/downloads
         ports:
             - "8337:8337"
         environment:
