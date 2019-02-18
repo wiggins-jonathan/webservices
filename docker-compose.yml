@@ -1,33 +1,12 @@
+---
+#          __           __
+#     ____/ /___  _____/ /_____  _____
+#    / __  / __ \/ ___/ //_/ _ \/ ___/
+#   / /_/ / /_/ / /__/ ,< /  __/ /
+#   \__,_/\____/\___/_/|_|\___/_/
+
 version: '3'
 services:
-    airsonic:
-        container_name: airsonic
-        environment:
-            PUID: 1000
-            PGID: 1000
-            TZ: America/Phoenix
-        image: linuxserver/airsonic
-        ports: 
-            - "4040:4040"
-        restart: unless-stopped
-        volumes:
-            - ~/docker/airsonic/config:/config
-            - ~/Backup/Music:/music
-
-    beets:
-        container_name: beets
-        environment:
-            PUID: 1000
-            PGID: 1000
-            TZ: America/Phoenix
-        image: linuxserver/beets
-        ports:
-            - "8337:8337"
-        restart: unless-stopped
-        volumes:
-            - ~/docker/beets/config:/config
-            - ~/Music:/music
-            - ~/Downloads:/downloads
 
     home-assistant:
         container_name: home-assistant
@@ -42,76 +21,3 @@ services:
         volumes:
             - ~/docker/home-assistant/config:/config 
 
-    ombi:
-        container_name: ombi
-        depends_on:
-            - plex
-        environment:
-            PUID: 1000
-            PGID: 1000
-            TZ: America/Phoenix
-        image: linuxserver/ombi
-        ports: 
-            - "3579:3579"
-        restart: unless-stopped
-        volumes:
-            - ~/docker/ombi/config:/config
-        
-    plex:
-        container_name: plex
-        environment:
-            PUID: 1000
-            PGID: 1000
-            TZ: America/Phoenix
-            VERSION: public
-        image: linuxserver/plex
-        network_mode: "host"
-        restart: unless-stopped
-        volumes:
-            - ~/docker/plex/config:/config
-            - ~/Backup/TV:/data/tvshows
-            - ~/Backup/Movies:/data/movies
-
-    tautulli:
-        container_name: tautulli
-        depends_on:
-            - plex
-        environment:
-            PUID: 1000
-            PGID: 1000
-            TZ: America/Phoenix
-        image: tautulli/tautulli
-        ports: 
-            - "8181:8181"
-        restart: unless-stopped
-        volumes:
-            - ~/docker/tautulli/config:/config
-
-#    letsencrypt:
-#        image: linuxserver/letsencrypt
-#        container_name: letsencrypt
-#        ports:
-#            - "443:443"
-#        volumes:
-#            - ~/docker/letsencrypt/config:/config
-#        restart: unless-stopped
-#        depends_on:
-#            - home-assistant
-#            - plex
-#            - tautulli
-#            - ombi
-#            - airsonic
-#        environment:
-#            PUID: 1000
-#            PGID: 1000
-#            EMAIL: wiggins.jonathan@gmail.com
-#            URL: jonathanwiggins.ddns.net
-#            SUBDOMAINS:
-#                - homeassistant
-#                - plex
-#                - tautulli
-#                - ombi
-#                - airsonic
-#            ONLY_SUBDOMAINS: true
-#            DHLEVEL: 4096
-#            TZ: America/Phoenix
