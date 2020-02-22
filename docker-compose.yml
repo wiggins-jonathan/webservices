@@ -1,23 +1,47 @@
----
-#          __           __
-#     ____/ /___  _____/ /_____  _____
-#    / __  / __ \/ ___/ //_/ _ \/ ___/
-#   / /_/ / /_/ / /__/ ,< /  __/ /
-#   \__,_/\____/\___/_/|_|\___/_/
-
-version: '3'
+version: '3.3'
 services:
-
-    home-assistant:
-        container_name: home-assistant
-        environment:
-            PUID: 1000
-            PGID: 1000
-            TZ: America/Phoenix
-        image: homeassistant/home-assistant
-        ports: 
-            - "8123:8123"
-        restart: unless-stopped
-        volumes:
-            - ~/docker/home-assistant/config:/config 
-
+  traefik:
+    image: traefik:v2.1.4
+    container_name: traefik
+    command:
+      - --log.level=INFO
+      - --accesslog=true
+      - --entrypoints.web.address=:80
+      - --entrypoints.web_secure.address=:443
+      - --providers.docker=true
+      - --api
+      - --providers.docker.exposedbydefault=false
+      # Let's Encrypt
+      - --certificatesresolvers.le.acme.dnschallenge=true
+      - --certificatesresolvers.le.acme.dnschallenge.provider=cloudflare
+      - --certificatesresolvers.le.acme.email=${EMAIL}
+      - --certificatesresolvers.le.acme.storage=/acme.json
+      # Testing server to avoid Let's Encrypt rate limiting certs
+      #- --certificatesresolvers.le.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory
+    ports:
+      - 80:80
+      - 443:443
+    environment:
+      - CF_API_EMAIL=${EMAIL}
+      - CF_API_KEY=${API_KEY}
+    volumes:
+      - ${HOME}/web_services/traefik/acme.json:/acme.json:rw
+      - ${HOME}/web_services/.htpasswd:/.htpasswd:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    labels:
+      # Dashboard
+      - traefik.enable=true
+      - traefik.http.routers.traefik.rule=Host(`${DOMAIN}`)
+      - traefik.http.routers.traefik.entrypoints=web_secure
+      - traefik.http.routers.traefik.service=api@internal
+      # Auth
+      - traefik.http.routers.traefik.middlewares=auth
+      - traefik.http.middlewares.auth.basicauth.usersfile=/.htpasswd
+      # Global https redirect
+      - traefik.http.routers.https_redirect.rule=hostregexp(`{host:.+}`)
+      - traefik.http.routers.https_redirect.entrypoints=web
+      - traefik.http.routers.https_redirect.middlewares=redirect_to_https
+      - traefik.http.middlewares.redirect_to_https.redirectscheme.scheme=https
+      # Let's Encrypt
+      - traefik.http.routers.traefik.tls.certresolver=le
+    restart: unless-stopped

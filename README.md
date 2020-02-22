@@ -1,4 +1,4 @@
-Docker configuration files for my home server. 
+Self-hosted web services using docker & traefik
 
 # Dependencies
-* [Home-assistant](https://www.home-assistant.io/)
+* [Traefik](https://traefik.io/)
