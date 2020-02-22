@@ -15,7 +15,7 @@ services:
       - --certificatesresolvers.le.acme.dnschallenge=true
       - --certificatesresolvers.le.acme.dnschallenge.provider=cloudflare
       - --certificatesresolvers.le.acme.email=${EMAIL}
-      - --certificatesresolvers.le.acme.storage=/acme.json
+      - --certificatesresolvers.le.acme.storage=traefik/acme.json
       # Testing server to avoid Let's Encrypt rate limiting certs
       #- --certificatesresolvers.le.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory
     ports:
@@ -25,8 +25,8 @@ services:
       - CF_API_EMAIL=${EMAIL}
       - CF_API_KEY=${API_KEY}
     volumes:
-      - ${HOME}/web_services/traefik/acme.json:/acme.json:rw
-      - ${HOME}/web_services/.htpasswd:/.htpasswd:ro
+      - ${HOME}/web_services/traefik/acme.json:/traefik/acme.json:rw
+      - ${HOME}/web_services/.htpasswd:/traefik/.htpasswd:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
     labels:
       # Dashboard
@@ -36,7 +36,7 @@ services:
       - traefik.http.routers.traefik.service=api@internal
       # Auth
       - traefik.http.routers.traefik.middlewares=auth
-      - traefik.http.middlewares.auth.basicauth.usersfile=/.htpasswd
+      - traefik.http.middlewares.auth.basicauth.usersfile=/traefik/.htpasswd
       # Global https redirect
       - traefik.http.routers.https_redirect.rule=hostregexp(`{host:.+}`)
       - traefik.http.routers.https_redirect.entrypoints=web
