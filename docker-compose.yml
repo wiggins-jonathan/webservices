@@ -4,12 +4,12 @@ services:
     image: traefik:v2.1.4
     container_name: traefik
     command:
-      - --log.level=INFO
+      - --log.level=DEBUG
       - --accesslog=true
       - --entrypoints.web.address=:80
       - --entrypoints.web_secure.address=:443
-      - --providers.docker=true
       - --api
+      - --providers.docker=true
       - --providers.docker.exposedbydefault=false
       # Let's Encrypt
       - --certificatesresolvers.le.acme.dnschallenge=true
@@ -22,8 +22,8 @@ services:
       - 80:80
       - 443:443
     environment:
-      - CF_API_EMAIL=${EMAIL}
-      - CF_API_KEY=${API_KEY}
+      CF_API_EMAIL  : ${EMAIL}
+      CF_API_KEY    : ${CF_API_KEY}
     volumes:
       - ${HOME}/web_services/traefik/acme.json:/traefik/acme.json:rw
       - ${HOME}/web_services/.htpasswd:/traefik/.htpasswd:ro
@@ -42,6 +42,8 @@ services:
       - traefik.http.routers.https_redirect.entrypoints=web
       - traefik.http.routers.https_redirect.middlewares=redirect_to_https
       - traefik.http.middlewares.redirect_to_https.redirectscheme.scheme=https
-      # Let's Encrypt
+      # Let's Encrypt Wildcard certs
       - traefik.http.routers.traefik.tls.certresolver=le
+      - traefik.http.routers.traefik.tls.domains[0].main=${DOMAIN}
+      - traefik.http.routers.traefik.tls.domains[0].sans=*.${DOMAIN}
     restart: unless-stopped
