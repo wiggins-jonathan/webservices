@@ -31,7 +31,7 @@ services:
     labels:
       # Dashboard
       - traefik.enable=true
-      - traefik.http.routers.traefik.rule=Host(`${DOMAIN}`)
+      - traefik.http.routers.traefik.rule=Host(`traefik.${DOMAIN}`)
       - traefik.http.routers.traefik.entrypoints=web_secure
       - traefik.http.routers.traefik.service=api@internal
       # Auth
