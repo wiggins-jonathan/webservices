@@ -48,43 +48,18 @@ services:
       traefik.http.routers.traefik.tls.domains[0].sans: '*.${DOMAIN}'
     restart: unless-stopped
 
-  firefly:
-    image: jc5x/firefly-iii:stable
-    container_name: firefly
-    depends_on:
-      - traefik
-      - postgres
+  fava:
+    image: yegle/fava:version-1.14
+    container_name: fava
+    depends_on: [traefik]
     environment:
-      APP_ENV: local
-      APP_DEBUG: 'false'
-      SITE_OWNER: ${EMAIL}
-      APP_KEY: ${FIREFLY_API_KEY}
-      DEFAULT_LANGUAGE: en_US
-      TZ: ${TZ}
-      APP_URL: firefly.${DOMAIN}
-      TRUSTED_PROXIES: '**'
-      DB_CONNECTION: pgsql
-      DB_HOST: postgres
-      DB_PORT: 5432
-      DB_DATABASE: firefly
-      DB_USERNAME: firefly
-      DB_PASSWORD: ${PASS}
+      BEANCOUNT_FILE: /fava/main.bean
     volumes:
-      - ${HOME}/web_services/firefly/export:/var/www/firefly-iii/storage/export
-      - ${HOME}/web_services/firefly/upload:/var/www/firefly-iii/storage/upload
+      - ${HOME}/web_services/fava:/fava
     labels:
       traefik.enable: 'true'
-      traefik.http.routers.firefly.entrypoints: web_secure
-      traefik.http.routers.firefly.rule: Host(`firefly.${DOMAIN}`)
-      traefik.http.routers.firefly.tls: 'true'
-      traefik.http.routers.firefly.middlewares: auth
+      traefik.http.routers.fava.entrypoints: web_secure
+      traefik.http.routers.fava.rule: Host(`fava.${DOMAIN}`)
+      traefik.http.routers.fava.tls: 'true'
+      traefik.http.routers.fava.middlewares: auth
     restart: unless-stopped
-
-  postgres:
-    image: postgres:10
-    container_name: postgres
-    environment:
-      POSTGRES_USER     : firefly
-      POSTGRES_PASSWORD : ${PASS}
-    volumes:
-      - ${HOME}/web_services/firefly/db:/var/lib/postgresql/data
