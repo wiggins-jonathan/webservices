@@ -4,7 +4,7 @@ services:
     image: traefik:v2.1.4
     container_name: traefik
     command:
-      - --log.level=DEBUG
+      - --log.level=ERROR
       - --accesslog=true
       - --entrypoints.web.address=:80
       - --entrypoints.web_secure.address=:443
