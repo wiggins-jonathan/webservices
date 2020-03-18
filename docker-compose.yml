@@ -1,7 +1,7 @@
 version: '3.3'
 services:
   traefik:
-    image: traefik:v2.1.4
+    image: traefik:v2.2
     container_name: traefik
     command:
       - --log.level=ERROR
@@ -53,13 +53,29 @@ services:
     container_name: fava
     depends_on: [traefik]
     environment:
-      BEANCOUNT_FILE: /fava/main.bean
+      BEANCOUNT_FILE: /my_finances/main.bean
     volumes:
-      - ${HOME}/web_services/fava:/fava
+      - ${HOME}/web_services/my_finances:/my_finances
     labels:
       traefik.enable: 'true'
       traefik.http.routers.fava.entrypoints: web_secure
       traefik.http.routers.fava.rule: Host(`fava.${DOMAIN}`)
       traefik.http.routers.fava.tls: 'true'
       traefik.http.routers.fava.middlewares: auth
+    restart: unless-stopped
+
+  bitwarden:
+    image: bitwardenrs/server:1.14-alpine
+    container_name: bitwarden
+    depends_on: [traefik]
+    environment:
+      WEBSOCKET_ENABLED : 'false'
+      SIGNUPS_ALLOWED   : 'false'
+    volumes:
+      - ${HOME}/web_services/bitwarden:/data
+    labels:
+      traefik.enable: 'true'
+      traefik.http.routers.bitwarden.entrypoints: web_secure
+      traefik.http.routers.bitwarden.rule: Host(`bitwarden.${DOMAIN}`)
+      traefik.http.routers.bitwarden.tls: 'true'
     restart: unless-stopped
