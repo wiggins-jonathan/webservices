@@ -79,3 +79,15 @@ services:
       traefik.http.routers.bitwarden.rule: Host(`bitwarden.${DOMAIN}`)
       traefik.http.routers.bitwarden.tls: 'true'
     restart: unless-stopped
+
+  fail2ban:
+    container_name: fail2ban
+    image: crazymax/fail2ban:0.11.1
+    network_mode: host
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    volumes:
+      - ${HOME}/web_services/fail2ban/data:/data
+      - /var/log:/var/log:ro
+    restart: unless-stopped
