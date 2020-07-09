@@ -80,6 +80,43 @@ services:
       traefik.http.routers.bitwarden.tls: 'true'
     restart: unless-stopped
 
+  transmission:
+    container_name: transmission
+    depends_on: [traefik]
+    image: linuxserver/transmission:3.00-r0-ls60
+    environment:
+      PUID: ${PUID}
+      PGID: ${PGID}
+      TZ: ${TZ}
+      USER: ${USER}
+      PASS: ${PASS}
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./transmission/config:/config
+      - ./transmission/downloads:/downloads
+      - ./transmission/watch:/watch
+    labels:
+      traefik.enable: 'true'
+      traefik.http.routers.transmission.entrypoints: web_secure
+      traefik.http.routers.transmission.rule: Host(`torrent.${DOMAIN}`)
+      traefik.http.routers.transmission.tls: 'true'
+      traefik.http.routers.transmission.middlewares: auth
+    restart: unless-stopped
+
+  filebrowser:
+    container_name: filebrowser
+    depends_on: [traefik]
+    image: filebrowser/filebrowser:v2
+    volumes:
+      - ${HOME}/web_services/transmission/downloads/complete:/srv
+      - ./filebrowser/database.db:/database.db
+    labels:
+      traefik.enable: 'true'
+      traefik.http.routers.filebrowser.entrypoints: web_secure
+      traefik.http.routers.filebrowser.rule: Host(`fb.${DOMAIN}`)
+      traefik.http.routers.filebrowser.tls: 'true'
+    restart: unless-stopped
+
   fail2ban:
     container_name: fail2ban
     image: crazymax/fail2ban:0.11.1
