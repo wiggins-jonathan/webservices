@@ -134,8 +134,9 @@ services:
     depends_on: [traefik]
     image: caddy:2.1.1-alpine
     volumes:
-      - ./caddy/index.html:/usr/share/caddy/index.html
-      - ./caddy/caddy_data:/data
+      - ./caddy/index.html:/usr/share/caddy/index.html:ro
+      - ./caddy/data:/data
+      - ./caddy/config:/config
     labels:
       traefik.enable: 'true'
       traefik.http.routers.caddy.entrypoints: web_secure
