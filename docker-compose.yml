@@ -143,3 +143,20 @@ services:
       traefik.http.routers.caddy.rule: Host(`${DOMAIN}`)
       traefik.http.routers.caddy.tls: 'true'
     restart: unless-stopped
+
+  freshrss:
+    container_name: freshrss
+    depends_on: [traefik]
+    image: linuxserver/freshrss:1.16.2-ls63
+    environment:
+      PUID: ${PUID}
+      PGID: ${PGID}
+      TZ: ${TZ}
+    volumes:
+      - ./freshrss/config:/config
+    labels:
+      traefik.enable: 'true'
+      traefik.http.routers.freshrss.entrypoints: web_secure
+      traefik.http.routers.freshrss.rule: Host(`rss.${DOMAIN}`)
+      traefik.http.routers.freshrss.tls: 'true'
+    restart: unless-stopped

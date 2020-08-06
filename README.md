@@ -5,3 +5,4 @@ Self-hosted web services using docker & traefik
 * [Traefik](https://traefik.io/)
 * [Beancount](http://furius.ca/beancount/)
 * [Fava](https://beancount.github.io/fava/)
+* [FreshRSS](https://www.freshrss.org/)
