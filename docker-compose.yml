@@ -94,11 +94,10 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - ./transmission/config:/config
       - ./transmission/downloads:/downloads
-      - ./transmission/watch:/watch
     labels:
       traefik.enable: 'true'
       traefik.http.routers.transmission.entrypoints: web_secure
-      traefik.http.routers.transmission.rule: Host(`torrent.${DOMAIN}`)
+      traefik.http.routers.transmission.rule: Host(`torrents.${DOMAIN}`)
       traefik.http.routers.transmission.tls: 'true'
       traefik.http.routers.transmission.middlewares: auth
     restart: unless-stopped
