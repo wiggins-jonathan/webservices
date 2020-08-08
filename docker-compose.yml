@@ -92,8 +92,8 @@ services:
       PASS: ${PASS}
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - ./transmission/config:/config
-      - ./transmission/downloads:/downloads
+      - ${HOME}/web_services/transmission/config:/config
+      - ${HOME}/web_services/transmission/downloads:/downloads
     labels:
       traefik.enable: 'true'
       traefik.http.routers.transmission.entrypoints: web_secure
@@ -108,7 +108,7 @@ services:
     image: filebrowser/filebrowser:v2
     volumes:
       - ${HOME}/web_services/transmission/downloads/complete:/srv
-      - ./filebrowser/database.db:/database.db
+      - ${HOME}/web_services/filebrowser/database.db:/database.db
     labels:
       traefik.enable: 'true'
       traefik.http.routers.filebrowser.entrypoints: web_secure
@@ -133,9 +133,9 @@ services:
     depends_on: [traefik]
     image: caddy:2.1.1-alpine
     volumes:
-      - ./caddy/index.html:/usr/share/caddy/index.html:ro
-      - ./caddy/data:/data
-      - ./caddy/config:/config
+      - ${HOME}/web_services/caddy/index.html:/usr/share/caddy/index.html:ro
+      - ${HOME}/web_services/caddy/data:/data
+      - ${HOME}/web_services/caddy/config:/config
     labels:
       traefik.enable: 'true'
       traefik.http.routers.caddy.entrypoints: web_secure
@@ -152,7 +152,7 @@ services:
       PGID: ${PGID}
       TZ: ${TZ}
     volumes:
-      - ./freshrss/config:/config
+      - ${HOME}/web_services/freshrss/config:/config
     labels:
       traefik.enable: 'true'
       traefik.http.routers.freshrss.entrypoints: web_secure
