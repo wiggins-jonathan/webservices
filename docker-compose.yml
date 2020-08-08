@@ -113,7 +113,7 @@ services:
     labels:
       traefik.enable: 'true'
       traefik.http.routers.filebrowser.entrypoints: web_secure
-      traefik.http.routers.filebrowser.rule: Host(`fb.${DOMAIN}`)
+      traefik.http.routers.filebrowser.rule: Host(`files.${DOMAIN}`)
       traefik.http.routers.filebrowser.tls: 'true'
     restart: unless-stopped
 
