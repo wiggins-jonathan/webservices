@@ -133,7 +133,7 @@ services:
     depends_on: [traefik]
     image: caddy:2.1.1-alpine
     volumes:
-      - ${HOME}/web_services/caddy/index.html:/usr/share/caddy/index.html:ro
+      - ${HOME}/web_services/caddy/www:/usr/share/caddy
       - ${HOME}/web_services/caddy/data:/data
       - ${HOME}/web_services/caddy/config:/config
     labels:
