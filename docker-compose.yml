@@ -26,7 +26,6 @@ services:
       CF_API_KEY    : ${CF_API_KEY}
     volumes:
       - ${HOME}/web_services/traefik/acme.json:/traefik/acme.json:rw
-      - ${HOME}/web_services/.htpasswd:/traefik/.htpasswd:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
     labels:
       # Dashboard
@@ -105,8 +104,6 @@ services:
       PUID: ${PUID}
       PGID: ${PGID}
       TZ: ${TZ}
-      USER: ${USER}
-      PASS: ${PASS}
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - ${HOME}/web_services/transmission/config:/config
