@@ -25,7 +25,7 @@ services:
       CF_API_EMAIL  : ${EMAIL}
       CF_API_KEY    : ${CF_API_KEY}
     volumes:
-      - ${HOME}/web_services/traefik/acme.json:/traefik/acme.json:rw
+      - ${HOME}/webservices/traefik/acme.json:/traefik/acme.json:rw
       - /var/run/docker.sock:/var/run/docker.sock:ro
     labels:
       # Dashboard
@@ -56,7 +56,7 @@ services:
     environment:
       TZ: ${TZ}
     volumes:
-      - ${HOME}/web_services/authelia:/config
+      - ${HOME}/webservices/authelia:/config
     labels:
       traefik.enable: 'true'
       traefik.http.routers.authelia.entrypoints: web_secure
@@ -71,7 +71,7 @@ services:
     environment:
       BEANCOUNT_FILE: /my_finances/main.bean
     volumes:
-      - ${HOME}/web_services/my_finances:/my_finances
+      - ${HOME}/webservices/my_finances:/my_finances
     labels:
       traefik.enable: 'true'
       traefik.http.routers.fava.entrypoints: web_secure
@@ -88,7 +88,7 @@ services:
       WEBSOCKET_ENABLED : 'false'
       SIGNUPS_ALLOWED   : 'false'
     volumes:
-      - ${HOME}/web_services/bitwarden:/data
+      - ${HOME}/webservices/bitwarden:/data
     labels:
       traefik.enable: 'true'
       traefik.http.routers.bitwarden.entrypoints: web_secure
@@ -106,8 +106,8 @@ services:
       TZ: ${TZ}
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - ${HOME}/web_services/transmission/config:/config
-      - ${HOME}/web_services/transmission/downloads:/downloads
+      - ${HOME}/webservices/transmission/config:/config
+      - ${HOME}/webservices/transmission/downloads:/downloads
     labels:
       traefik.enable: 'true'
       traefik.http.routers.transmission.entrypoints: web_secure
@@ -121,8 +121,8 @@ services:
     container_name: filebrowser
     depends_on: [traefik]
     volumes:
-      - ${HOME}/web_services/transmission/downloads/complete:/srv
-      - ${HOME}/web_services/filebrowser/database.db:/database.db
+      - ${HOME}/webservices/transmission/downloads/complete:/srv
+      - ${HOME}/webservices/filebrowser/database.db:/database.db
     labels:
       traefik.enable: 'true'
       traefik.http.routers.filebrowser.entrypoints: web_secure
@@ -138,7 +138,7 @@ services:
       - NET_ADMIN
       - NET_RAW
     volumes:
-      - ${HOME}/web_services/fail2ban/data:/data
+      - ${HOME}/webservices/fail2ban/data:/data
       - /var/log:/var/log:ro
     restart: unless-stopped
 
@@ -147,9 +147,9 @@ services:
     container_name: caddy
     depends_on: [traefik]
     volumes:
-      - ${HOME}/web_services/caddy/www:/usr/share/caddy
-      - ${HOME}/web_services/caddy/data:/data
-      - ${HOME}/web_services/caddy/config:/config
+      - ${HOME}/webservices/caddy/www:/usr/share/caddy
+      - ${HOME}/webservices/caddy/data:/data
+      - ${HOME}/webservices/caddy/config:/config
     labels:
       traefik.enable: 'true'
       traefik.http.routers.caddy.entrypoints: web_secure
@@ -166,7 +166,7 @@ services:
       PGID: ${PGID}
       TZ: ${TZ}
     volumes:
-      - ${HOME}/web_services/freshrss/config:/config
+      - ${HOME}/webservices/freshrss/config:/config
     labels:
       traefik.enable: 'true'
       traefik.http.routers.freshrss.entrypoints: web_secure
