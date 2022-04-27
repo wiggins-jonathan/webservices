@@ -1,176 +1,66 @@
-version: '3.3'
+---
 services:
-  traefik:
-    image: traefik:v2.4.7
-    container_name: traefik
-    command:
-      - --log.level=ERROR
-      - --accesslog=true
-      - --entrypoints.web.address=:80
-      - --entrypoints.web_secure.address=:443
-      - --api
-      - --providers.docker=true
-      - --providers.docker.exposedbydefault=false
-      # Let's Encrypt
-      - --certificatesresolvers.le.acme.dnschallenge=true
-      - --certificatesresolvers.le.acme.dnschallenge.provider=cloudflare
-      - --certificatesresolvers.le.acme.email=${EMAIL}
-      - --certificatesresolvers.le.acme.storage=traefik/acme.json
-      # Testing server to avoid Let's Encrypt rate limiting certs
-      #- --certificatesresolvers.le.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory
+  wireguard:
+    image: linuxserver/wireguard:1.0.20210914
+    container_name: wireguard
     ports:
-      - 80:80
-      - 443:443
-    environment:
-      CF_API_EMAIL  : ${EMAIL}
-      CF_API_KEY    : ${CF_API_KEY}
-    volumes:
-      - ${HOME}/webservices/traefik/acme.json:/traefik/acme.json:rw
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-    labels:
-      # Dashboard
-      traefik.enable: 'true'
-      traefik.http.routers.traefik.rule: Host(`traefik.${DOMAIN}`)
-      traefik.http.routers.traefik.entrypoints: web_secure
-      traefik.http.routers.traefik.service: api@internal
-      traefik.http.routers.traefik.middlewares: authelia@docker
-      # Authelia https://www.authelia.com/docs/deployment/supported-proxies/traefik2.x.html
-      traefik.http.middlewares.authelia.forwardauth.address: http://authelia:9091/api/verify?rd=https://auth.${DOMAIN}/
-      traefik.http.middlewares.authelia.forwardauth.trustForwardHeader: 'true'
-      traefik.http.middlewares.authelia.forwardauth.authResponseHeaders: X-Forward-User
-      # Global https redirect
-      traefik.http.routers.https_redirect.rule: hostregexp(`{host:.+}`)
-      traefik.http.routers.https_redirect.entrypoints: web
-      traefik.http.routers.https_redirect.middlewares: redirect_to_https
-      traefik.http.middlewares.redirect_to_https.redirectscheme.scheme: https
-      # Let's Encrypt Wildcard certs
-      traefik.http.routers.traefik.tls.certresolver: le
-      traefik.http.routers.traefik.tls.domains[0].main: ${DOMAIN}
-      traefik.http.routers.traefik.tls.domains[0].sans: '*.${DOMAIN}'
-    restart: unless-stopped
-
-  authelia:
-    image: authelia/authelia:4.21.0
-    container_name: authelia
-    depends_on: [traefik]
-    environment:
-      TZ: ${TZ}
-    volumes:
-      - ${HOME}/webservices/authelia:/config
-    labels:
-      traefik.enable: 'true'
-      traefik.http.routers.authelia.entrypoints: web_secure
-      traefik.http.routers.authelia.rule: Host(`auth.${DOMAIN}`)
-      traefik.http.routers.authelia.tls: 'true'
-    restart: unless-stopped
-
-  fava:
-    image: yegle/fava:version-1.14
-    container_name: fava
-    depends_on: [traefik, authelia]
-    environment:
-      BEANCOUNT_FILE: /my_finances/main.bean
-    volumes:
-      - ${HOME}/webservices/my_finances:/my_finances
-    labels:
-      traefik.enable: 'true'
-      traefik.http.routers.fava.entrypoints: web_secure
-      traefik.http.routers.fava.rule: Host(`fava.${DOMAIN}`)
-      traefik.http.routers.fava.tls: 'true'
-      traefik.http.routers.fava.middlewares: authelia@docker
-    restart: unless-stopped
-
-  bitwarden:
-    image: bitwardenrs/server:1.14-alpine
-    container_name: bitwarden
-    depends_on: [traefik]
-    environment:
-      WEBSOCKET_ENABLED : 'false'
-      SIGNUPS_ALLOWED   : 'false'
-    volumes:
-      - ${HOME}/webservices/bitwarden:/data
-    labels:
-      traefik.enable: 'true'
-      traefik.http.routers.bitwarden.entrypoints: web_secure
-      traefik.http.routers.bitwarden.rule: Host(`bitwarden.${DOMAIN}`)
-      traefik.http.routers.bitwarden.tls: 'true'
-    restart: unless-stopped
-
-  transmission:
-    image: linuxserver/transmission:3.00-r0-ls60
-    container_name: transmission
-    depends_on: [traefik, authelia]
+      - "51820:51820/udp"
+      - "80:80" # For caddy
     environment:
       PUID: ${PUID}
       PGID: ${PGID}
-      TZ: ${TZ}
+      TZ  : ${TZ}
     volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - ${HOME}/webservices/transmission/config:/config
-      - ${HOME}/webservices/transmission/downloads:/downloads
-    labels:
-      traefik.enable: 'true'
-      traefik.http.routers.transmission.entrypoints: web_secure
-      traefik.http.routers.transmission.rule: Host(`torrents.${DOMAIN}`)
-      traefik.http.routers.transmission.tls: 'true'
-      traefik.http.routers.transmission.middlewares: authelia@docker
-    restart: unless-stopped
-
-  filebrowser:
-    image: filebrowser/filebrowser:v2
-    container_name: filebrowser
-    depends_on: [traefik]
-    volumes:
-      - ${HOME}/webservices/transmission/downloads/complete:/srv
-      - ${HOME}/webservices/filebrowser/database.db:/database.db
-    labels:
-      traefik.enable: 'true'
-      traefik.http.routers.filebrowser.entrypoints: web_secure
-      traefik.http.routers.filebrowser.rule: Host(`files.${DOMAIN}`)
-      traefik.http.routers.filebrowser.tls: 'true'
-    restart: unless-stopped
-
-  fail2ban:
-    image: crazymax/fail2ban:0.11.1
-    container_name: fail2ban
-    network_mode: host
+      - ${HOME}/webservices/wireguard:/config
+      - /lib/modules:/lib/modules
     cap_add:
       - NET_ADMIN
-      - NET_RAW
-    volumes:
-      - ${HOME}/webservices/fail2ban/data:/data
-      - /var/log:/var/log:ro
+      - SYS_MODULE
+    privileged: 'true'
+    sysctls:
+      net.ipv4.conf.all.src_valid_mark: 1
     restart: unless-stopped
 
   caddy:
-    image: caddy:2.1.1-alpine
+    image: caddy:2.4.6-alpine
     container_name: caddy
-    depends_on: [traefik]
+    depends_on: [wireguard]
+    network_mode: service:wireguard
+    environment:
+      DOMAIN: ${DOMAIN}
     volumes:
-      - ${HOME}/webservices/caddy/www:/usr/share/caddy
+      - ${HOME}/webservices/caddy/caddyfile:/etc/caddy/Caddyfile:ro
       - ${HOME}/webservices/caddy/data:/data
       - ${HOME}/webservices/caddy/config:/config
-    labels:
-      traefik.enable: 'true'
-      traefik.http.routers.caddy.entrypoints: web_secure
-      traefik.http.routers.caddy.rule: Host(`${DOMAIN}`)
-      traefik.http.routers.caddy.tls: 'true'
     restart: unless-stopped
 
-  freshrss:
-    image: linuxserver/freshrss:1.16.2-ls63
-    container_name: freshrss
-    depends_on: [traefik, authelia]
+  vaultwarden:
+    image: vaultwarden/server:1.24.0-alpine
+    container_name: vaultwarden
+    depends_on: [caddy, wireguard]
     environment:
-      PUID: ${PUID}
-      PGID: ${PGID}
-      TZ: ${TZ}
+      WEBSOCKET_ENABLED : 'true'
+      SIGNUPS_ALLOWED   : 'false'
     volumes:
-      - ${HOME}/webservices/freshrss/config:/config
-    labels:
-      traefik.enable: 'true'
-      traefik.http.routers.freshrss.entrypoints: web_secure
-      traefik.http.routers.freshrss.rule: Host(`rss.${DOMAIN}`)
-      traefik.http.routers.freshrss.tls: 'true'
-      traefik.http.routers.freshrss.middlewares: authelia@docker
+      - ${HOME}/webservices/vaultwarden:/data
+    restart: unless-stopped
+
+  home-assistant:
+    image: homeassistant/home-assistant:2022.4
+    container_name: home-assistant
+    network_mode: host
+    volumes:
+      - ${HOME}/webservices/home-assistant:/config
+      - /etc/localtime:/etc/localtime:ro
+    restart: unless-stopped
+
+  mosquitto:
+    image: eclipse-mosquitto:2.0.14-openssl
+    container_name: mosquitto
+    depends_on: [home-assistant]
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    volumes:
+      - ./mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf
     restart: unless-stopped
