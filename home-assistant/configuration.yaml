@@ -1,5 +1,4 @@
-# Loads default set of integrations. Do not remove.
-default_config:
+default_config: # Loads default set of integrations. Do not remove.
 
 # Text to speech
 tts:
@@ -12,16 +11,19 @@ scene: !include scenes.yaml
 # Light groups
 light:
   - platform: group
+    unique_id: living_room_lights
     name: Living Room Lights
     entities:
       - light.yeelight_color_0x53855bf
       - light.yeelight_color_0x53857f5
   - platform: group
+    unique_id: bedroom_lights
     name: Bedroom Lights
     entities:
       - light.tasmota_2
       - light.tasmota_3
   - platform: group
+    unique_id: porch_lights
     name: Porch Lights
     entities:
       - light.tasmota
