@@ -22,7 +22,7 @@ services:
     restart: unless-stopped
 
   caddy:
-    image: caddy:2.4.6-alpine
+    image: caddy:2.5.1-alpine
     container_name: caddy
     depends_on: [wireguard]
     network_mode: service:wireguard
