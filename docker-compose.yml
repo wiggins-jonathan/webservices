@@ -1,58 +1,33 @@
----
+x-env: &env
+  TZ: ${TZ}
+  PUID: ${PUID}
+  PGID: ${PGID}
+
+x-restart: &restart
+  restart: unless-stopped
+
 services:
-  wireguard:
-    image: linuxserver/wireguard:1.0.20210914
-    container_name: wireguard
+  adguard:
+    image: adguard/adguardhome:v0.107.11
+    container_name: adguard
     ports:
-      - "51820:51820/udp"
-      - "80:80" # For caddy
-    environment:
-      PUID: ${PUID}
-      PGID: ${PGID}
-      TZ  : ${TZ}
+      - "53:53"       # dns
+      - "53:53/udp"   # dns
+      - "3000:3000"   # initial setup
+      - "8080:80"     # dashboard
     volumes:
-      - ${HOME}/webservices/wireguard:/config
-      - /lib/modules:/lib/modules
-    cap_add:
-      - NET_ADMIN
-      - SYS_MODULE
-    privileged: 'true'
-    sysctls:
-      net.ipv4.conf.all.src_valid_mark: 1
-    restart: unless-stopped
-
-  caddy:
-    image: caddy:2.5.1-alpine
-    container_name: caddy
-    depends_on: [wireguard]
-    network_mode: service:wireguard
-    environment:
-      DOMAIN: ${DOMAIN}
-    volumes:
-      - ${HOME}/webservices/caddy/caddyfile:/etc/caddy/Caddyfile:ro
-      - ${HOME}/webservices/caddy/data:/data
-      - ${HOME}/webservices/caddy/config:/config
-    restart: unless-stopped
-
-  vaultwarden:
-    image: vaultwarden/server:1.24.0-alpine
-    container_name: vaultwarden
-    depends_on: [caddy, wireguard]
-    environment:
-      WEBSOCKET_ENABLED : 'true'
-      SIGNUPS_ALLOWED   : 'false'
-    volumes:
-      - ${HOME}/webservices/vaultwarden:/data
-    restart: unless-stopped
+      - ./adguard/work:/opt/adguardhome/work
+      - ./adguard/config:/opt/adguardhome/conf
+    <<: *restart
 
   home-assistant:
     image: homeassistant/home-assistant:2022.4
     container_name: home-assistant
     network_mode: host
     volumes:
-      - ${HOME}/webservices/home-assistant:/config
+      - ./home-assistant:/config
       - /etc/localtime:/etc/localtime:ro
-    restart: unless-stopped
+    <<: *restart
 
   mosquitto:
     image: eclipse-mosquitto:2.0.14-openssl
