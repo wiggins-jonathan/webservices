@@ -38,4 +38,74 @@ services:
       - "9001:9001"
     volumes:
       - ./mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf
-    restart: unless-stopped
+    <<: *restart
+
+  jellyfin:
+    image: linuxserver/jellyfin:10.8.4
+    container_name: jellyfin
+    environment:
+      <<: *env
+    ports:
+      - "8096:8096"
+      - "7359:7359/udp" # Allows client discovery on local network
+        #- "1900:1900/udp" # DLNA discovery
+    volumes:
+      - ./jellyfin:/config
+      - /home/jonathan/video/tv:/data/tvshows
+      - /home/jonathan/video/movies:/data/movies
+      - /home/jonathan/video/music_videos:/data/music_videos
+      - /home/jonathan/music:/data/music
+    <<: *restart
+
+  transmission:
+    image: linuxserver/transmission:version-3.00-r5
+    container_name: transmission
+    environment:
+      TRANSMISSION_WEB_HOME: /flood-for-transmission/
+      <<: *env
+    ports:
+      - "9091:9091" # webui
+      # torrents
+      - "51413:51413"
+      - "51413:51413/udp"
+    volumes:
+      - ./transmission:/config
+      - ./transmission/downloads:/downloads
+      - ./transmission/watch:/watch
+    <<: *restart
+
+  uptime-kuma:
+    image: louislam/uptime-kuma:1.17.1-alpine
+    container_name: uptime-kuma
+    ports: ["3001:3001"]
+    volumes:
+      - ./uptime-kuma:/app/data
+    <<: *restart
+
+  navidrome:
+    image: deluan/navidrome:0.47.5
+    container_name: navidrome
+    ports: ["4533:4533"]
+    user: 1000:1003
+    environment:
+      ND_REVERSEPROXYWHITELIST: '10.10.10.1/32'
+    volumes:
+      - ./navidrome:/data
+      - /home/jonathan/music:/music:ro
+    <<: *restart
+
+  vaultwarden:
+    image: vaultwarden/server:1.25.2-alpine
+    container_name: vaultwarden
+    ports:
+      - "8081:80"   # webui
+      - "3012:3012" # websockets
+    environment:
+      WEBSOCKET_ENABLED:    'true'
+      SIGNUPS_ALLOWED:      'false'
+      INVITATIONS_ALLOWED:  'false'
+      SHOW_PASSWORD_HINT:   'false'
+      <<: *env
+    volumes:
+      - ./vaultwarden:/data
+    <<: *restart
