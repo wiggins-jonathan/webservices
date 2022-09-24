@@ -94,6 +94,41 @@ services:
       - /home/jonathan/music:/music:ro
     <<: *restart
 
+  lldap:
+    image: nitnelave/lldap:v0.4
+    container_name: lldap
+    environment:
+      UID: ${PUID}
+      GID: ${PGID}
+      LLDAP_JWT_SECRET: ${LLDAP_JWT_SECRET}
+      LLDAP_LDAP_USER_PASS: ${PASSWORD}
+      LLDAP_LDAP_BASE_DN: ${BASE_DN}
+    ports:
+      - "3890:3890"   # ldap
+      - "17170:17170" # web UI
+    volumes:
+      - ./lldap:/data
+    <<: *restart
+
+  authelia:
+    image: authelia/authelia:4.36.7
+    container_name: authelia
+    depends_on: [lldap]
+    environment:
+      AUTHELIA_DEFAULT_REDIRECTION_URL: https://auth.${DOMAIN}
+      AUTHELIA_SESSION_DOMAIN: ${DOMAIN}
+      AUTHELIA_JWT_SECRET: ${AUTHELIA_JWT_SECRET}
+      AUTHELIA_SESSION_SECRET: ${AUTHELIA_SESSION_SECRET}
+      AUTHELIA_STORAGE_ENCRYPTION_KEY: ${AUTHELIA_STORAGE_ENCRYPTION_KEY}
+      AUTHELIA_AUTHENTICATION_BACKEND_LDAP_PASSWORD: ${PASSWORD}
+      AUTHELIA_AUTHENTICATION_BACKEND_LDAP_BASE_DN: ${BASE_DN}
+      AUTHELIA_AUTHENTICATION_BACKEND_LDAP_USER: uid=admin,ou=people,${BASE_DN}
+      <<: *env
+    ports: ["1000:1000"]
+    volumes:
+      - ./authelia:/config
+    <<: *restart
+
   vaultwarden:
     image: vaultwarden/server:1.25.2-alpine
     container_name: vaultwarden
