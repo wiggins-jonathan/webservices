@@ -30,7 +30,7 @@ services:
     <<: *restart
 
   mosquitto:
-    image: eclipse-mosquitto:2.0.14-openssl
+    image: eclipse-mosquitto:2.0.15-openssl
     container_name: mosquitto
     depends_on: [home-assistant]
     ports:
