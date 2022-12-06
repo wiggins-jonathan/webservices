@@ -144,3 +144,14 @@ services:
     volumes:
       - ./vaultwarden:/data
     <<: *restart
+
+  whoogle:
+    image: benbusby/whoogle-search:0.8.0
+    container_name: whoogle
+    environment:
+      WHOOGLE_CONFIG_URL: https://search.${DOMAIN}
+      HTTPS_ONLY: 1
+      WHOOGLE_RESULTS_PER_PAGE: 20
+      WHOOGLE_TOR_SERVICE: 0
+    ports: ["1300:5000"]
+    <<: *restart
