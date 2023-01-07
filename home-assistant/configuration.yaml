@@ -1,12 +1,19 @@
 default_config: # Loads default set of integrations. Do not remove.
 
-# Text to speech
-tts:
-  - platform: google_translate
-
 automation: !include automations.yaml
 script: !include scripts.yaml
 scene: !include scenes.yaml
+
+homeassistant:
+  name: home
+  unit_system: metric
+  currency: USD
+  country: US
+  time_zone: !env_var TZ
+
+# Text to speech
+tts:
+  - platform: google_translate
 
 # Light groups
 light:
