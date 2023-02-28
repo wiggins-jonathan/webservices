@@ -157,3 +157,14 @@ services:
       WHOOGLE_TOR_SERVICE: 0
     ports: ["1300:5000"]
     <<: *restart
+
+  kavita:
+    image: kizaing/kavita:0.7.1
+    container_name: kavita
+    environment:
+      TZ: ${TZ}
+    volumes:
+        - /home/jonathan/documents/books:/books
+        - ./kavita:/kavita/config
+    ports: ["1400:5000"]
+    <<: *restart
