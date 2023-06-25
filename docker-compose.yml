@@ -60,10 +60,9 @@ services:
     <<: *restart
 
   transmission:
-    image: linuxserver/transmission:version-3.00-r5
+    image: linuxserver/transmission:4.0.0
     container_name: transmission
     environment:
-      TRANSMISSION_WEB_HOME: /flood-for-transmission/
       <<: *env
     ports:
       - "9091:9091" # webui
