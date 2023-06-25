@@ -146,6 +146,46 @@ services:
       - ./vaultwarden:/data
     <<: *restart
 
+  ntfy:
+    image: binwiederhier/ntfy:v1.27.2-armv7
+    container_name: ntfy
+    ports: ["1100:80"]
+    environment:
+      TZ: ${TZ}
+      NTFY_BEHIND_PROXY: 'true'
+    user: ${PUID}:${PGID}
+    command: [serve]
+    volumes:
+      - ./ntfy:/etc/ntfy
+      - ./ntfy/cache:/var/cache/ntfy
+    <<: *restart
+
+  watchtower:
+    image: containrrr/watchtower:1.4.0
+    container_name: watchtower
+    environment:
+      TZ: ${TZ}
+      WATCHTOWER_MONITOR_ONLY: 'true'
+      WATCHTOWER_NOTIFICATIONS: shoutrrr
+      WATCHTOWER_NOTIFICATION_URL: generic+https://ntfy.${DOMAIN}/watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    <<: *restart
+
+  filebrowser:
+    image: filebrowser/filebrowser:v2.22.4-s6
+    container_name: filebrowser
+    environment:
+      <<: *env
+      FB_AUTH_METHOD: proxy
+      FB_AUTH_HEADER: Remote-User
+    ports: ["1200:80"]
+    volumes:
+      - ./filebrowser/config:/config
+      - ./filebrowser/db:/database
+      - ./transmission/downloads/complete:/srv
+    <<: *restart
+
   whoogle:
     image: benbusby/whoogle-search:0.8.0
     container_name: whoogle
