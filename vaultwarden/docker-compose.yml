@@ -1,0 +1,14 @@
+services:
+  vaultwarden:
+    image: vaultwarden/server:1.31.0-alpine
+    container_name: vaultwarden
+    ports: ["8080:80"]
+    environment:
+      DOMAIN: 'https://vaultwarden.wiggins.tech'
+      WEBSOCKET_ENABLED: 'true'
+      SIGNUPS_ALLOWED: 'false'
+      INVITATIONS_ALLOWED: 'false'
+      SHOW_PASSWORD_HINT: 'false'
+    volumes:
+      - ./data:/data
+    restart: unless-stopped

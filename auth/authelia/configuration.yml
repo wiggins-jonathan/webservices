@@ -1,0 +1,95 @@
+theme: auto
+
+server:
+  address: 0.0.0.0:1000
+
+log:
+  # Trace, debug, info, warn, or error. Trace exposes /debug/vars &
+  # /debug/pprof/ endpoints
+  level: debug
+  format: text  # text or json
+
+totp:
+  issuer: authelia.com
+  period: 30
+  skew: 1
+
+access_control:
+  default_policy: deny
+  rules:
+    - domain: ['auth.wiggins.tech', 'wiggins.tech', 'git.wiggins.tech']
+      policy: bypass
+    - domain: 'music.wiggins.tech'
+      policy: bypass
+      resources: '^/rest([/?].*)?$'
+    - domain: 'music.wiggins.tech'
+      policy: bypass
+      resources: '^/share([/?].*)?$'
+    - domain: '*.wiggins.tech'
+      policy: two_factor
+
+session:
+  name: authelia_session
+  expiration: 28800  # 8 hours
+  inactivity: 3600   # 1 hour
+  cookies:
+    - domain: {{ env "DOMAIN" }}
+      authelia_url: 'https://auth.{{ env "DOMAIN" }}'
+
+regulation:
+  max_retries: 3
+  find_time: 120
+  ban_time: 300
+
+storage:
+  local:
+    path: /config/db.sqlite3
+
+notifier:
+  smtp:
+    # The "submissions" scheme uses port 465 & ssl/tls
+    address: 'submissions://smtp.purelymail.com'
+    username: 'noreply@{{ env "DOMAIN" }}'
+    sender: 'Do Not Reply <noreply@{{ env "DOMAIN" }}>'
+    identifier: {{ env "DOMAIN" }}
+
+authentication_backend:
+  password_reset:
+    disable: false
+  refresh_interval: 1m
+  ldap:
+    attributes:
+      group_name: cn
+      mail: mail
+      display_name: displayName # This will be used to greet an authenticated user.
+      username: uid
+    implementation: custom
+    address: 'ldap://lldap:3890'
+    timeout: 5s
+    start_tls: false
+    additional_users_dn: ou=people
+    # To allow sign in both with username and email, one can use a filter like
+    # (&(|({username_attribute}={input})({mail_attribute}={input}))(objectClass=person))
+    users_filter: (&({username_attribute}={input})(objectClass=person))
+    additional_groups_dn: ou=groups
+    groups_filter: (member={dn})
+
+identity_providers:
+  oidc:
+    jwks: # jwks key requires 'X_AUTHELIA_CONFIG_FILTERS=template' env var
+      - key: {{ secret "/config/jwks/private.pem" | mindent 10 "|" | msquote }}
+    clients:
+      - client_id: jellyfin
+        client_secret: $pbkdf2-sha512$310000$NV922ICqpb7V4V9UOGKhog$q..dMCBhwjlYpB9KNcbJkgbNBE4Qoyz6CfrWjavmBejBNR5qXE6CcQaz2BBXlj2rtkGF93N3arV.qy2YE.S5LA
+        token_endpoint_auth_method: client_secret_post
+        authorization_policy: two_factor
+        redirect_uris:
+          - 'https://watch.wiggins.tech/sso/OID/redirect/authelia'
+
+      - client_id: immich
+        client_secret: $pbkdf2-sha512$310000$AxU6I299pefiiIn6UjFc9w$I70eurggPeC4.SbIrmfLN7rYcnqawcDUNca9HhIc2dlxOn2MKACLBaF9lMYCC/dE844NrXsbi0DEeJdfus7xNQ
+        authorization_policy: two_factor
+        redirect_uris:
+          - 'app.immich:/'  # for mobile sso
+          - 'https://photos.wiggins.tech/auth/login'
+          - 'https://photos.wiggins.tech/user-settings'

@@ -1,0 +1,15 @@
+services:
+  soft-serve:
+    image: charmcli/soft-serve:v0.7.4
+    container_name: soft-serve
+    environment:
+      SOFT_SERVE_NAME: git.${DOMAIN}
+      SOFT_SERVE_INITIAL_ADMIN_KEYS: ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBSlnCzEq8KrEnCV0lisLzlO87/79lS5Ot4IjV4Oa2G3 deck@steamdeck
+    ports:
+      - 23231:23231 # ssh
+      - 23232:23232 # http
+      - 23233:23233 # stats server
+      - 9418:9418   # git
+    volumes:
+      - ./config:/soft-serve
+    restart: unless-stopped

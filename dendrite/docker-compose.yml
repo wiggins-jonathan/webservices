@@ -1,0 +1,32 @@
+services:
+  postgres:
+    container_name: postgres
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: dendrite
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DATABASE: dendrite
+    volumes:
+      - ./db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U dendrite"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  dendrite:
+    container_name: dendrite
+    image: matrixdotorg/dendrite-monolith:v0.13.7
+    ports:
+      - 8008:8008
+      - 8448:8448
+    volumes:
+      - ./config:/etc/dendrite
+      - ./media:/var/dendrite/media
+      - ./jetstream:/var/dendrite/jetstream
+      - ./search:/var/dendrite/searchindex
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
