@@ -1,0 +1,50 @@
+endpoints:
+  - name: auth
+    group: wiggins.tech
+    url: "https://auth.wiggins.tech"
+    interval: 5m
+    conditions:
+      - "[STATUS] == 200"
+      - "[RESPONSE_TIME] < 500"
+  - name: vaultwarden
+    group: wiggins.tech
+    url: "https://vaultwarden.wiggins.tech"
+    interval: 5m
+    conditions:
+      - "[STATUS] == 200"
+      - "[RESPONSE_TIME] < 500"
+  - name: matrix
+    group: wiggins.tech
+    url: "https://matrix.wiggins.tech"
+    interval: 5m
+    conditions:
+      - "[STATUS] == 200"
+      - "[RESPONSE_TIME] < 500"
+  - name: photos
+    group: wiggins.tech
+    url: "https://photos.wiggins.tech"
+    interval: 5m
+    conditions:
+      - "[STATUS] == 200"
+      - "[RESPONSE_TIME] < 500"
+  - name: music
+    group: wiggins.tech
+    url: "https://music.wiggins.tech/rest"
+    interval: 5m
+    conditions:
+      - "[STATUS] == 200"
+      - "[RESPONSE_TIME] < 500"
+  - name: watch
+    group: wiggins.tech
+    url: "https://watch.wiggins.tech"
+    interval: 5m
+    conditions:
+      - "[STATUS] == 200"
+      - "[RESPONSE_TIME] < 500"
+  - name: hireme
+    group: wiggins.tech
+    url: "https://hireme.wiggins.tech"
+    interval: 5m
+    conditions:
+      - "[STATUS] == 200"
+      - "[RESPONSE_TIME] < 500"

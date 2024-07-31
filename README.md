@@ -1,17 +1,17 @@
 # Self-hosted webservices
 
 ## Services
-- [docker](https://www.docker.com/) & docker compose for containerization
+- [docker](https://www.docker.com)
 - [adguard-home](https://adguard.com/en/adguard-home/overview.html)
-- [authelia](https://www.authelia.com/)
+- [authelia](https://www.authelia.com)
 - [lldap](https://github.com/nitnelave/lldap)
 - [vaultwarden](https://github.com/dani-garcia/vaultwarden)
-- [ntfy](https://ntfy.sh/)
-- [watchtower](https://containrrr.dev/watchtower/)
-- [uptime-kuma](https://uptime.kuma.pet/)
-- [navidrome](https://www.navidrome.org/)
-- [home-assistant](https://www.home-assistant.io/)
-- [jellyfin](https://jellyfin.org/)
+- [ntfy](https://ntfy.sh)
+- [watchtower](https://containrrr.dev/watchtower)
+- [gatus](https://gatus.io)
+- [navidrome](https://www.navidrome.org)
+- [jellyfin](https://jellyfin.org)
+- [owncloud](https://owncloud.com/infinite-scale)
 
 Secrets are managed with [sops](https://github.com/getsops/sops)
 

@@ -1,0 +1,11 @@
+services:
+  gatus:
+    container_name: gatus
+    image: twinproduction/gatus
+    ports: ["8090:8080"]
+    environment:
+      GATUS_CONFIG_PATH: ./config
+    volumes:
+      - ./config:/config
+      - ./data:/data
+    restart: unless-stopped
