@@ -5,6 +5,7 @@ services:
     environment:
       SOFT_SERVE_NAME: git.${DOMAIN}
       SOFT_SERVE_INITIAL_ADMIN_KEYS: ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBSlnCzEq8KrEnCV0lisLzlO87/79lS5Ot4IjV4Oa2G3 deck@steamdeck
+      SOFT_SERVE_SSH_PUBLIC_URL: "ssh://nas:23231"
     ports:
       - 23231:23231 # ssh
       - 23232:23232 # http
