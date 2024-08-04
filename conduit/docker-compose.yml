@@ -23,3 +23,10 @@ services:
     volumes:
       - ./data:/var/lib/matrix-conduit/
     restart: unless-stopped
+
+  instagram-bridge:
+    image: dock.mau.dev/mautrix/meta:v0.3.2
+    container_name: instagram-bridge
+    volumes:
+      - ./bridges/instagram:/data
+    restart: unless-stopped
