@@ -90,6 +90,6 @@ identity_providers:
         client_secret: $pbkdf2-sha512$310000$AxU6I299pefiiIn6UjFc9w$I70eurggPeC4.SbIrmfLN7rYcnqawcDUNca9HhIc2dlxOn2MKACLBaF9lMYCC/dE844NrXsbi0DEeJdfus7xNQ
         authorization_policy: two_factor
         redirect_uris:
-          - 'app.immich:/'  # for mobile sso
+          - 'app.immich:///oauth-callback'  # for mobile sso
           - 'https://photos.wiggins.tech/auth/login'
           - 'https://photos.wiggins.tech/user-settings'

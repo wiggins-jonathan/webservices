@@ -27,7 +27,7 @@ services:
     restart: unless-stopped
 
   authelia:
-    image: authelia/authelia:4.38.6
+    image: authelia/authelia:4.38.16
     container_name: authelia
     depends_on: [lldap]
     environment:
