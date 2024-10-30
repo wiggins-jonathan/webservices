@@ -17,14 +17,13 @@ totp:
 access_control:
   default_policy: deny
   rules:
-    - domain: ['auth.wiggins.tech', 'wiggins.tech', 'git.wiggins.tech']
+    - domain: ['auth.wiggins.tech', 'wiggins.tech']
       policy: bypass
     - domain: 'music.wiggins.tech'
       policy: bypass
-      resources: '^/rest([/?].*)?$'
-    - domain: 'music.wiggins.tech'
-      policy: bypass
-      resources: '^/share([/?].*)?$'
+      resources:
+        - '^/rest([/?].*)?$'
+        - '^/share([/?].*)?$'
     - domain: '*.wiggins.tech'
       policy: two_factor
 
