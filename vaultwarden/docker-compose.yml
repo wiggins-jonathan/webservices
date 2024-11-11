@@ -1,6 +1,6 @@
 services:
   vaultwarden:
-    image: vaultwarden/server:1.32.3-alpine
+    image: vaultwarden/server:1.32.4-alpine
     container_name: vaultwarden
     ports: ["8080:80"]
     environment:
