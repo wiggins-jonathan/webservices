@@ -9,6 +9,8 @@ services:
         # even though conduit is served on matrix.${DOMAIN}, we use the
         # .well-known delegation to set users/rooms here to just ${DOMAIN}
         CONDUIT_SERVER_NAME: ${DOMAIN}
+        CONDUIT_WELL_KNOWN_CLIENT: 'https://matrix.${DOMAIN}'
+        CONDUIT_WELL_KNOWN_SERVER: 'matrix.${DOMAIN}:443'
 
         CONDUIT_DATABASE_PATH: /var/lib/matrix-conduit/
         CONDUIT_DATABASE_BACKEND: rocksdb
@@ -27,6 +29,7 @@ services:
   instagram-bridge:
     image: dock.mau.dev/mautrix/meta:v0.3.2
     container_name: instagram-bridge
+    depends_on: [conduit]
     volumes:
       - ./bridges/instagram:/data
     restart: unless-stopped
