@@ -27,6 +27,12 @@ access_control:
     - domain: '*.wiggins.tech'
       policy: two_factor
 
+webauthn:
+  enable_passkey_login: true
+  display_name: 'auth.{{ env "DOMAIN" }}'
+  attestation_conveyance_preference: 'indirect'
+  timeout: '120 seconds'
+
 session:
   name: authelia_session
   expiration: 28800  # 8 hours
