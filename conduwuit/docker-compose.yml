@@ -1,0 +1,25 @@
+services:
+  conduwuit:
+    image: girlbossceo/conduwuit:main
+    container_name: conduwuit
+    ports: ["8448:8008"]  # published port 8448 can't be changed because of federation
+    environment:
+      CONDUWUIT_SERVER_NAME: ${DOMAIN}
+      CONDUWUIT_DATABASE_PATH: /var/lib/conduwuit
+      CONDUWUIT_ADDRESS: 0.0.0.0
+      CONDUWUIT_ALLOW_REGISTRATION: 'true'
+      CONDUWUIT_REGISTRATION_TOKEN: 'this is a secure token' # A registration token is required when registration is allowed.
+      CONDUWUIT_ALLOW_FEDERATION: 'true'
+      CONDUWUIT_TRUSTED_SERVERS: '["matrix.org"]'
+      CONDUWUIT_NEW_USER_DISPLAYNAME_SUFFIX: ''
+    volumes:
+        - ./data:/var/lib/conduwuit
+    restart: unless-stopped
+
+  instagram-bridge:
+    image: dock.mau.dev/mautrix/meta:v0.4.5
+    container_name: instagram-bridge
+    depends_on: [conduwuit]
+    volumes:
+      - ./bridges/instagram:/data
+    restart: unless-stopped
