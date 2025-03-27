@@ -29,10 +29,10 @@ endpoints:
       - "[RESPONSE_TIME] < 500"
   - name: music
     group: wiggins.tech
-    url: "https://music.wiggins.tech/rest"
+    url: "https://music.wiggins.tech"
     interval: 5m
     conditions:
-      - "[STATUS] == 200"
+      - "[STATUS] == 401"
       - "[RESPONSE_TIME] < 500"
   - name: watch
     group: wiggins.tech

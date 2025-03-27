@@ -1,7 +1,7 @@
 services:
   gatus:
     container_name: gatus
-    image: twinproduction/gatus:v5.13.0
+    image: twinproduction/gatus:v5.17.0
     ports: ["8090:8080"]
     environment:
       GATUS_CONFIG_PATH: ./config
