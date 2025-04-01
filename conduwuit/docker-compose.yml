@@ -23,3 +23,11 @@ services:
     volumes:
       - ./bridges/instagram:/data
     restart: unless-stopped
+
+  gvoice-bridge:
+    image: dock.mau.dev/mautrix/gvoice:latest
+    container_name: gvoice-bridge
+    depends_on: [conduwuit]
+    volumes:
+      - ./bridges/gvoice:/data
+    restart: unless-stopped
