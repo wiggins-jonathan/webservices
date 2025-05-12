@@ -1,14 +1,15 @@
 services:
   navidrome:
-    image: deluan/navidrome:0.55.1
+    image: deluan/navidrome:0.55.2
     container_name: navidrome
     ports: ["4533:4533"]
     user: 1000:100
     environment:
-      ND_REVERSEPROXYWHITELIST: '172.22.0.1/32'
+      ND_REVERSEPROXYWHITELIST: '100.64.0.0/24' # tailscale subnet range
       ND_ENABLESHARING: 'true'
       ND_ENABLEINSIGHTSCOLLECTOR: 'false'
+      ND_ENABLEUSEREDITING: 'false'
     volumes:
       - ./data:/data
-      - /mnt/media/music:/music:ro
+      - /mnt/data/media/music:/music:ro
     restart: unless-stopped
