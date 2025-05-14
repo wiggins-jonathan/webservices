@@ -1,0 +1,22 @@
+x-env : &env
+  TZ: America/Phoenix
+  PUID: 1000
+  PGID: 100
+
+x-time: &time /etc/localtime:/etc/localtime:ro
+
+x-restart: &restart
+  restart: unless-stopped
+
+services:
+  jellyfin:
+    image: linuxserver/jellyfin:10.10.7
+    container_name: jellyfin
+    ports: ["8096:8096"]
+    environment:
+      <<: *env
+    volumes:
+      - ./jellyfin/config:/config
+      - /mnt/data/media:/media
+    devices: ["/dev/dri:/dev/dri"]  # intel quicksync hardware acceleration
+    <<: *restart
