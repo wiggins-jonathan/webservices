@@ -1,0 +1,33 @@
+services:
+  tuwunel:
+    image: jevolk/tuwunel:latest
+    container_name: tuwunel
+    ports: ["8448:8008"]  # published port 8448 can't be changed because of federation
+    environment:
+      TUWUNEL_SERVER_NAME: ${DOMAIN}
+      TUWUNEL_DATABASE_PATH: /var/lib/tuwunel
+      TUWUNEL_ADDRESS: 0.0.0.0
+      TUWUNEL_ALLOW_REGISTRATION: 'true'
+      TUWUNEL_REGISTRATION_TOKEN: 'this is a secure token' # A registration token is required when registration is allowed.
+      TUWUNEL_ALLOW_FEDERATION: 'true'
+      TUWUNEL_TRUSTED_SERVERS: '["matrix.org"]'
+      TUWUNEL_NEW_USER_DISPLAYNAME_SUFFIX: ''
+    volumes:
+        - ./data:/var/lib/tuwunel
+    restart: unless-stopped
+
+  instagram-bridge:
+    image: dock.mau.dev/mautrix/meta:v0.4.5
+    container_name: instagram-bridge
+    depends_on: [tuwunel]
+    volumes:
+      - ./bridges/instagram:/data
+    restart: unless-stopped
+
+  gvoice-bridge:
+    image: dock.mau.dev/mautrix/gvoice:latest
+    container_name: gvoice-bridge
+    depends_on: [tuwunel]
+    volumes:
+      - ./bridges/gvoice:/data
+    restart: unless-stopped
