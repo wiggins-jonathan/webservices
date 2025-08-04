@@ -79,6 +79,8 @@ authentication_backend:
     additional_groups_dn: ou=groups
     groups_filter: (member={dn})
 
+# generate a client_secret using authelia:
+# authelia crypto hash generate pbkdf2 --variant sha512 --random --random.length 40 --random.charset rfc3986
 identity_providers:
   oidc:
     jwks: # jwks key requires 'X_AUTHELIA_CONFIG_FILTERS=template' env var
@@ -98,3 +100,12 @@ identity_providers:
           - 'app.immich:///oauth-callback'  # for mobile sso
           - 'https://photos.wiggins.tech/auth/login'
           - 'https://photos.wiggins.tech/user-settings'
+
+      - client_id: jellyseer
+        client_secret: $pbkdf2-sha512$310000$URFCNCcDYnGt1LOGk1Bn.Q$AaIUOL5.UZUPngfwrfdE5TOTndkdHUih0fmuF566OpcTm62WTNoZ398T0ZZ4YUeXsGkOxWzCHznn40F2rqVadA
+        public: false
+        authorization_policy: two_factor
+        redirect_uris:
+          - 'https://requests.wiggins.tech/login?provider=authelia&callback=true'
+        scopes: ['openid', 'email', 'profile']
+        token_endpoint_auth_method: 'client_secret_post'
