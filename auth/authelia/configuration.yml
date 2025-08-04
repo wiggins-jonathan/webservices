@@ -32,6 +32,7 @@ webauthn:
   display_name: 'auth.{{ env "DOMAIN" }}'
   attestation_conveyance_preference: 'indirect'
   timeout: '120 seconds'
+  experimental_enable_passkey_uv_two_factors: true
 
 session:
   name: authelia_session
