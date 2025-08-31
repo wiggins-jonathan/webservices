@@ -1,6 +1,6 @@
 services:
   lldap:
-    image: lldap/lldap:v0.6.1-alpine
+    image: lldap/lldap:v0.6.2-alpine
     container_name: lldap
     environment:
       UID: 1000
@@ -27,7 +27,7 @@ services:
     restart: unless-stopped
 
   authelia:
-    image: authelia/authelia:4.39.5
+    image: authelia/authelia:4.39.7
     container_name: authelia
     depends_on: [lldap]
     environment:
