@@ -26,7 +26,7 @@ services:
     restart: unless-stopped
 
   gvoice-bridge:
-    image: dock.mau.dev/mautrix/gvoice:latest
+    image: dock.mau.dev/mautrix/gvoice:v0.1.2
     container_name: gvoice-bridge
     depends_on: [tuwunel]
     volumes:
