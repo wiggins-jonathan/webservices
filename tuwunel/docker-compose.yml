@@ -1,6 +1,6 @@
 services:
   tuwunel:
-    image: jevolk/tuwunel:latest
+    image: jevolk/tuwunel:v1.3.0
     container_name: tuwunel
     ports: ["8448:8008"]  # published port 8448 can't be changed because of federation
     environment:
@@ -13,7 +13,7 @@ services:
       TUWUNEL_TRUSTED_SERVERS: '["matrix.org"]'
       TUWUNEL_NEW_USER_DISPLAYNAME_SUFFIX: ''
     volumes:
-        - ./data:/var/lib/tuwunel
+      - ./data:/var/lib/tuwunel
     restart: unless-stopped
 
   instagram-bridge:
