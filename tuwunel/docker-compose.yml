@@ -18,7 +18,7 @@ services:
     restart: unless-stopped
 
   instagram-bridge:
-    image: dock.mau.dev/mautrix/meta:v0.4.5
+    image: dock.mau.dev/mautrix/meta:v0.5.3
     container_name: instagram-bridge
     depends_on: [tuwunel]
     volumes:
