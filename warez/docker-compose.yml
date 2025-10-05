@@ -22,7 +22,7 @@ services:
     <<: *restart
 
   deluge:
-    image: linuxserver/deluge:2.2.0-r0-ls332
+    image: linuxserver/deluge:2.2.0-r1-ls348
     container_name: deluge
     ports:
       - "8112:8112"   # web ui
@@ -37,7 +37,7 @@ services:
     <<: *restart
 
   radarr: # movies
-    image: linuxserver/radarr:5.26.2.10099-ls276
+    image: linuxserver/radarr:5.27.5.10198-ls283
     container_name: radarr
     ports: ["7878:7878"]
     environment:
@@ -48,7 +48,7 @@ services:
     <<: *restart
 
   sonarr: # tv
-    image: linuxserver/sonarr:4.0.15.2941-ls286
+    image: linuxserver/sonarr:4.0.15.2941-ls293
     container_name: sonarr
     ports: ["8989:8989"]
     environment:
@@ -59,7 +59,7 @@ services:
     <<: *restart
 
   prowlarr: # indexers
-    image: linuxserver/prowlarr:1.37.0.5076-ls120
+    image: linuxserver/prowlarr:2.0.5.5160-ls127
     container_name: prowlarr
     ports: ["9696:9696"]
     environment:
