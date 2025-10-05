@@ -95,12 +95,15 @@ identity_providers:
           - 'https://watch.wiggins.tech/sso/OID/redirect/authelia'
 
       - client_id: immich
-        client_secret: $pbkdf2-sha512$310000$AxU6I299pefiiIn6UjFc9w$I70eurggPeC4.SbIrmfLN7rYcnqawcDUNca9HhIc2dlxOn2MKACLBaF9lMYCC/dE844NrXsbi0DEeJdfus7xNQ
+        client_secret: $pbkdf2-sha512$310000$oxtvRRwPKuWcRLME1/ddTA$MzA9yvLzZlaxM23hqJYDRYE/6qxJwgxUuCQhbT9KRe299qKu2a13/Q2Ekx9Fqoe1Qv.ShBsnyuYUnfkhMjJb2w
         authorization_policy: two_factor
         redirect_uris:
           - 'app.immich:///oauth-callback'  # for mobile sso
           - 'https://photos.wiggins.tech/auth/login'
           - 'https://photos.wiggins.tech/user-settings'
+        id_token_signed_response_alg: 'RS256'
+        userinfo_signed_response_alg: 'RS256'
+        token_endpoint_auth_method: 'client_secret_post'
 
       - client_id: jellyseer
         client_secret: $pbkdf2-sha512$310000$URFCNCcDYnGt1LOGk1Bn.Q$AaIUOL5.UZUPngfwrfdE5TOTndkdHUih0fmuF566OpcTm62WTNoZ398T0ZZ4YUeXsGkOxWzCHznn40F2rqVadA
