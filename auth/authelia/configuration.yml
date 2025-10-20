@@ -113,3 +113,10 @@ identity_providers:
           - 'https://requests.wiggins.tech/login?provider=authelia&callback=true'
         scopes: ['openid', 'email', 'profile']
         token_endpoint_auth_method: 'client_secret_post'
+
+      - client_id: rustical
+        client_secret: $pbkdf2-sha512$310000$rPbA/dQLTFcdMtihqZWaWA$Gv4oYoJytn4TP3ey7RUsnIZG92gsOs7yCHgwngLvROas7DFs1i2Y9wRQviDr9DgWHiEC86qtuUDHn7fVlpa7hQ
+        consent_mode: implicit
+        redirect_uris:
+          - 'https://rustical.wiggins.tech/frontend/login/oidc/callback'
+        scopes: [openid, profile, groups]
