@@ -3,10 +3,9 @@ services:
     image: lldap/lldap:v0.6.2-alpine
     container_name: lldap
     environment:
-      UID: 1000
-      GID: 100
-      TZ: America/Phoenix
-      #LLDAP_VERBOSE: true
+      UID: ${PUID}
+      GID: ${PGID}
+      TZ: ${TZ}
       LLDAP_HTTP_URL: "https://lldap.${DOMAIN}"
       LLDAP_JWT_SECRET: ${LLDAP_JWT_SECRET}
       LLDAP_LDAP_USER_PASS: ${LLDAP_USER_PASS}
