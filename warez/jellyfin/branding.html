@@ -1,0 +1,37 @@
+<!-- add to 'login disclaimer' section under jellyfin admin dashboard -->
+<form action="https://watch.wiggins.tech/sso/OID/start/auth">
+  <button class="raised block emby-button button-submit">
+    Sign in with wiggins.tech
+  </button>
+</form>
+
+<!-- add to 'custom CSS code' section under jellyfin admin dashboard -->
+a.raised.emby-button {
+    color: inherit !important;
+}
+
+.btnForgotPassword {
+    display: none !important;
+}
+
+.loginDisclaimerContainer,
+.loginDisclaimer,
+.manualLoginForm {
+    all: unset;
+}
+
+.manualLoginForm {
+    display: block !important;
+}
+
+.manualLoginForm > :not(:first-child) {
+    display: none !important;
+}
+
+.manualLoginForm .sectionTitle {
+    display: block !important;
+    font-size: 2em;
+    text-align: center;
+    margin-top: 3em;
+    color: inherit;
+}
