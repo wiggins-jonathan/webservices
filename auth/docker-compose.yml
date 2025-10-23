@@ -46,3 +46,42 @@ services:
     volumes:
       - ./authelia:/config
     restart: unless-stopped
+
+  pocketid:
+    image: ghcr.io/pocket-id/pocket-id:v1.13.1
+    container_name: pocketid
+    depends_on: [lldap]
+    ports: ["1411:1411"]
+    environment:
+      APP_URL: "https://pocketid.${DOMAIN}"
+      TRUST_PROXY: true
+      PUID: ${PUID}
+      PGID: ${PGID}
+      TZ: ${TZ}
+      ANALYTICS_DISABLED: 'true'
+      UI_CONFIG_DISABLED: 'true'  # required for the following env vars
+      APP_NAME: ${DOMAIN}
+      SESSION_DURATION: 480 # 8 hours
+      LDAP_ENABLED: 'true'
+      LDAP_URL: 'ldap://lldap:3890'
+      LDAP_BIND_DN: 'uid=admin,ou=people,dc=wiggins,dc=tech'
+      LDAP_BIND_PASSWORD: ${LLDAP_USER_PASS}
+      LDAP_BASE: ${BASE_DN}
+      LDAP_ATTRIBUTE_USER_UNIQUE_IDENTIFIER: uuid
+      LDAP_ATTRIBUTE_USER_USERNAME: uid
+      LDAP_ATTRIBUTE_USER_EMAIL: mail
+      LDAP_ATTRIBUTE_USER_FIRST_NAME: givenName
+      LDAP_ATTRIBUTE_USER_LAST_NAME: sn
+      LDAP_ATTRIBUTE_USER_PROFILE_PICTURE: jpegPhoto
+      LDAP_ATTRIBUTE_GROUP_UNIQUE_IDENTIFIER: uuid
+      LDAP_ATTRIBUTE_GROUP_NAME: cn
+      LDAP_ATTRIBUTE_ADMIN_GROUP: pocketid_admin_group
+    volumes:
+      - "./pocketid:/app/data"
+    healthcheck:
+      test: [ "CMD", "/app/pocket-id", "healthcheck" ]
+      interval: 1m30s
+      timeout: 5s
+      retries: 2
+      start_period: 10s
+    restart: unless-stopped
