@@ -53,7 +53,7 @@ services:
     depends_on: [lldap]
     ports: ["1411:1411"]
     environment:
-      APP_URL: "https://pocketid.${DOMAIN}"
+      APP_URL: "https://auth.${DOMAIN}"
       TRUST_PROXY: true
       PUID: ${PUID}
       PGID: ${PGID}
