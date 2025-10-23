@@ -1,0 +1,17 @@
+services:
+  rustical:
+    image: ghcr.io/lennart-k/rustical:0.9.11
+    container_name: rustical
+    ports: ["4000:4000"]
+    environment:
+      RUSTICAL_OIDC__NAME: ${DOMAIN}
+      RUSTICAL_OIDC__ISSUER: "https://auth.${DOMAIN}"
+      RUSTICAL_OIDC__CLIENT_ID: 8f101085-8cc4-400d-8db6-993dd32465a7
+      RUSTICAL_OIDC__CLIENT_SECRET: ${CLIENT_SECRET}
+      RUSTICAL_OIDC__CLAIM_USERID: "preferred_username"
+      RUSTICAL_OIDC__SCOPES: '["openid", "profile", "groups"]'
+      RUSTICAL_OIDC__ALLOW_SIGN_UP: 'false'
+      RUSTICAL_FRONTEND__ALLOW_PASSWORD_LOGIN: 'false'
+    volumes:
+      - ./data:/var/lib/rustical
+    restart: unless-stopped
