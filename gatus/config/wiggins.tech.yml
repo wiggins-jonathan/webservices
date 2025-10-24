@@ -48,3 +48,10 @@ endpoints:
     conditions:
       - "[STATUS] == 200"
       - "[RESPONSE_TIME] < 500"
+  - name: webdav
+    group: wiggins.tech
+    url: "https://webdav.wiggins.tech"
+    interval: 5m
+    conditions:
+      - "[STATUS] == 200"
+      - "[RESPONSE_TIME] < 500"
