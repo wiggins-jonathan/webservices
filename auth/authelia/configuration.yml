@@ -6,7 +6,7 @@ server:
 log:
   # Trace, debug, info, warn, or error. Trace exposes /debug/vars &
   # /debug/pprof/ endpoints
-  level: debug
+  level: info
   format: text  # text or json
 
 totp:
@@ -17,7 +17,7 @@ totp:
 access_control:
   default_policy: deny
   rules:
-    - domain: ['auth.wiggins.tech', 'wiggins.tech']
+    - domain: ['auth.wiggins.tech', 'authelia.wiggins.tech', 'wiggins.tech']
       policy: bypass
     - domain: 'music.wiggins.tech'
       policy: bypass
@@ -29,7 +29,7 @@ access_control:
 
 webauthn:
   enable_passkey_login: true
-  display_name: 'auth.{{ env "DOMAIN" }}'
+  display_name: 'authelia.{{ env "DOMAIN" }}'
   attestation_conveyance_preference: 'indirect'
   timeout: '120 seconds'
   experimental_enable_passkey_uv_two_factors: true
@@ -40,7 +40,7 @@ session:
   inactivity: 3600   # 1 hour
   cookies:
     - domain: {{ env "DOMAIN" }}
-      authelia_url: 'https://auth.{{ env "DOMAIN" }}'
+      authelia_url: 'https://authelia.{{ env "DOMAIN" }}'
 
 regulation:
   max_retries: 3
@@ -79,44 +79,3 @@ authentication_backend:
     users_filter: (&({username_attribute}={input})(objectClass=person))
     additional_groups_dn: ou=groups
     groups_filter: (member={dn})
-
-# generate a client_secret using authelia:
-# authelia crypto hash generate pbkdf2 --variant sha512 --random --random.length 40 --random.charset rfc3986
-identity_providers:
-  oidc:
-    jwks: # jwks key requires 'X_AUTHELIA_CONFIG_FILTERS=template' env var
-      - key: {{ secret "/config/jwks/private.pem" | mindent 10 "|" | msquote }}
-    clients:
-      - client_id: jellyfin
-        client_secret: $pbkdf2-sha512$310000$NV922ICqpb7V4V9UOGKhog$q..dMCBhwjlYpB9KNcbJkgbNBE4Qoyz6CfrWjavmBejBNR5qXE6CcQaz2BBXlj2rtkGF93N3arV.qy2YE.S5LA
-        token_endpoint_auth_method: client_secret_post
-        authorization_policy: two_factor
-        redirect_uris:
-          - 'https://watch.wiggins.tech/sso/OID/redirect/authelia'
-
-      - client_id: immich
-        client_secret: $pbkdf2-sha512$310000$oxtvRRwPKuWcRLME1/ddTA$MzA9yvLzZlaxM23hqJYDRYE/6qxJwgxUuCQhbT9KRe299qKu2a13/Q2Ekx9Fqoe1Qv.ShBsnyuYUnfkhMjJb2w
-        authorization_policy: two_factor
-        redirect_uris:
-          - 'app.immich:///oauth-callback'  # for mobile sso
-          - 'https://photos.wiggins.tech/auth/login'
-          - 'https://photos.wiggins.tech/user-settings'
-        id_token_signed_response_alg: 'RS256'
-        userinfo_signed_response_alg: 'RS256'
-        token_endpoint_auth_method: 'client_secret_post'
-
-      - client_id: jellyseer
-        client_secret: $pbkdf2-sha512$310000$URFCNCcDYnGt1LOGk1Bn.Q$AaIUOL5.UZUPngfwrfdE5TOTndkdHUih0fmuF566OpcTm62WTNoZ398T0ZZ4YUeXsGkOxWzCHznn40F2rqVadA
-        public: false
-        authorization_policy: two_factor
-        redirect_uris:
-          - 'https://requests.wiggins.tech/login?provider=authelia&callback=true'
-        scopes: ['openid', 'email', 'profile']
-        token_endpoint_auth_method: 'client_secret_post'
-
-      - client_id: rustical
-        client_secret: $pbkdf2-sha512$310000$rPbA/dQLTFcdMtihqZWaWA$Gv4oYoJytn4TP3ey7RUsnIZG92gsOs7yCHgwngLvROas7DFs1i2Y9wRQviDr9DgWHiEC86qtuUDHn7fVlpa7hQ
-        consent_mode: implicit
-        redirect_uris:
-          - 'https://rustical.wiggins.tech/frontend/login/oidc/callback'
-        scopes: [openid, profile, groups]
