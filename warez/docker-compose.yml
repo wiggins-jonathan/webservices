@@ -89,3 +89,14 @@ services:
       - ./audiobookshelf/config:/config
       - ./audiobookshelf/metadata:/metadata
     <<: *restart
+
+  audiobookrequest:
+    image: markbeep/audiobookrequest:1.8.0
+    container_name: audiobookrequest
+    ports: ["13379:8000"]
+    environment:
+      ABR_APP__INIT_ROOT_USERNAME: admin
+      ABR_APP__INIT_ROOT_PASSWORD: ${audiobookrequest_password}
+    volumes:
+      - ./audiobookrequest:/config
+    <<: *restart
