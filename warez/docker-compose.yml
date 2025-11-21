@@ -10,7 +10,7 @@ x-restart: &restart
 
 services:
   jellyfin:
-    image: linuxserver/jellyfin:10.11.1
+    image: linuxserver/jellyfin:10.11.3
     container_name: jellyfin
     ports: ["8096:8096"]
     environment:
