@@ -10,6 +10,7 @@ services:
       TUWUNEL_ALLOW_FEDERATION: 'true'
       TUWUNEL_TRUSTED_SERVERS: '["matrix.org"]'
       TUWUNEL_NEW_USER_DISPLAYNAME_SUFFIX: ''
+      TUWUNEL_SUPPRESS_PUSH_WHEN_ACTIVE: 'true'
       #TUWUNEL_ALLOW_REGISTRATION: 'true'
       #TUWUNEL_REGISTRATION_TOKEN: 'this is a secure token' # A registration token is required when registration is allowed.
       #TUWUNEL_LOG: 'debug'
