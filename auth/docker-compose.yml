@@ -47,7 +47,7 @@ services:
     restart: unless-stopped
 
   pocketid:
-    image: ghcr.io/pocket-id/pocket-id:v1.15.0
+    image: ghcr.io/pocket-id/pocket-id:v1.16.0
     container_name: pocketid
     depends_on: [lldap]
     ports: ["1411:1411"]
