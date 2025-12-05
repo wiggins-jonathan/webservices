@@ -1,6 +1,6 @@
 services:
   tuwunel:
-    image: jevolk/tuwunel:v1.4.6
+    image: jevolk/tuwunel:v1.4.7
     container_name: tuwunel
     ports: ["8448:8008"]  # published port 8448 can't be changed because of federation
     environment:
