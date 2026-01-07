@@ -26,7 +26,7 @@ services:
     restart: unless-stopped
 
   authelia:
-    image: authelia/authelia:4.39.13
+    image: authelia/authelia:4.39.15
     container_name: authelia
     depends_on: [lldap]
     environment:
@@ -47,11 +47,12 @@ services:
     restart: unless-stopped
 
   pocketid:
-    image: ghcr.io/pocket-id/pocket-id:v1.16.0
+    image: ghcr.io/pocket-id/pocket-id:v2.1.0
     container_name: pocketid
     depends_on: [lldap]
     ports: ["1411:1411"]
     environment:
+      ENCRYPTION_KEY: ${POCKETID_ENCRYPTION_KEY}
       APP_URL: "https://auth.${DOMAIN}"
       TRUST_PROXY: true
       PUID: ${PUID}
@@ -74,7 +75,7 @@ services:
       LDAP_ATTRIBUTE_USER_PROFILE_PICTURE: jpegPhoto
       LDAP_ATTRIBUTE_GROUP_UNIQUE_IDENTIFIER: uuid
       LDAP_ATTRIBUTE_GROUP_NAME: cn
-      LDAP_ATTRIBUTE_ADMIN_GROUP: pocketid_admin_group
+      LDAP_ADMIN_GROUP_NAME: pocketid_admin_group
     volumes:
       - "./pocketid:/app/data"
     healthcheck:

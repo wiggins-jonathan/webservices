@@ -1,6 +1,6 @@
 services:
   tuwunel:
-    image: jevolk/tuwunel:v1.4.7
+    image: jevolk/tuwunel:v1.4.9.1
     container_name: tuwunel
     ports: ["8448:8008"]  # published port 8448 can't be changed because of federation
     environment:
@@ -13,7 +13,7 @@ services:
       TUWUNEL_SUPPRESS_PUSH_WHEN_ACTIVE: 'true'
       #TUWUNEL_ALLOW_REGISTRATION: 'true'
       #TUWUNEL_REGISTRATION_TOKEN: 'this is a secure token' # A registration token is required when registration is allowed.
-      #TUWUNEL_LOG: 'debug'
+      TUWUNEL_LOG: 'debug'
     volumes:
       - ./data:/var/lib/tuwunel
     restart: unless-stopped
