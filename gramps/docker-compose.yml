@@ -1,0 +1,46 @@
+services:
+  grampsweb: &grampsweb
+    image: ghcr.io/gramps-project/grampsweb:26.2.0
+    container_name: grampsweb
+    depends_on: [grampsweb_redis]
+    ports: ["5000:5000"]
+    environment:
+      GRAMPSWEB_TREE: "Gramps Web"  # will create a new tree if not exists
+      GRAMPSWEB_CELERY_CONFIG__broker_url: 'redis://grampsweb_redis:6379/0'
+      GRAMPSWEB_CELERY_CONFIG__result_backend: 'redis://grampsweb_redis:6379/0'
+      GRAMPSWEB_RATELIMIT_STORAGE_URI: 'redis://grampsweb_redis:6379/1'
+      GRAMPSWEB_DISABLE_TELEMETRY: 'true'
+      GRAMPSWEB_BASE_URL: https://family.${DOMAIN}
+      GRAMPSWEB_OIDC_ENABLED: 'true'
+      GRAMPSWEB_OIDC_NAME: auth.${DOMAIN}
+      GRAMPSWEB_OIDC_ISSUER: https://auth.${DOMAIN}
+      GRAMPSWEB_OIDC_CLIENT_ID: 019602bd-90af-408d-9fe3-bae3a5d9e9a2
+      GRAMPSWEB_OIDC_CLIENT_SECRET: ${OIDC_CLIENT_SECRET}
+      GRAMPSWEB_OIDC_SCOPES: openid email profile groups
+      GRAMPSWEB_OIDC_GROUP_EDITOR: family
+      GRAMPSWEB_OIDC_DISABLE_LOCAL_AUTH: 'true'
+      GRAMPSWEB_OIDC_AUTO_REDIRECT: 'true'
+    volumes:
+      - ./data/users:/app/users
+      - ./data/index:/app/indexdir
+      - ./data/thumb_cache:/app/thumbnail_cache
+      - ./data/cache:/app/cache
+      - ./data/secret:/app/secret
+      - ./db:/root/.gramps/grampsdb
+      - ./data/media:/app/media
+    restart: always
+
+  grampsweb_redis:
+    image: docker.io/library/redis:7.2.4-alpine
+    container_name: grampsweb-redis
+    restart: always
+
+  grampsweb_celery:
+    <<: *grampsweb  # YAML merge key copying the entire grampsweb service config
+    ports: []
+    container_name: grampsweb-celery
+    depends_on:
+      - grampsweb
+      - grampsweb_redis
+    command: celery -A gramps_webapi.celery worker --loglevel=INFO --concurrency=2
+    restart: always
