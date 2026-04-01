@@ -1,0 +1,57 @@
+services:
+  romm:
+    image: rommapp/romm:4.8.0
+    container_name: romm
+    depends_on:
+      romm-db:
+        condition: service_healthy
+        restart: true
+    ports: ["8081:8080"]
+    environment:
+      DB_HOST: romm-db
+      DB_USER: romm-user # Should match MARIADB_USER in mariadb
+      DB_PASSWD: ${DB_PASSWD}
+      ROMM_AUTH_SECRET_KEY: ${ROMM_AUTH_SECRET_KEY}  # Generate a key with `openssl rand -hex 32`
+      HASHEOUS_API_ENABLED: 'true'
+      LAUNCHBOX_API_ENABLED: 'true'
+      ENABLE_SCHEDULED_UPDATE_LAUNCHBOX_METADATA: 'true'
+      PLAYMATCH_API_ENABLED: 'true'
+      FLASHPOINT_API_ENABLED: 'true'
+      HLTB_API_ENABLED: 'true'
+      SCREENSCRAPER_USER: rommXwigginsXtech
+      SCREENSCRAPER_PASSWORD: ${SCREENSCRAPER_PASSWORD}
+      OIDC_ENABLED: 'true'
+      DISABLE_USERPASS_LOGIN: 'true'
+      OIDC_PROVIDER: auth.${DOMAIN}
+      OIDC_CLIENT_ID: b01397c8-2f3f-4346-9484-783403c0db18
+      OIDC_CLIENT_SECRET: ${OIDC_CLIENT_SECRET}
+      OIDC_REDIRECT_URI: https://play.${DOMAIN}/api/oauth/openid
+      OIDC_SERVER_APPLICATION_URL: https://auth.${DOMAIN}
+      OIDC_CLAIM_ROLES: groups
+      OIDC_ROLE_ADMIN: romm_admin
+      OIDC_ROLE_EDITOR: romm_editor
+    volumes:
+      - ./data/resources:/romm/resources
+      - ./data/redis:/redis-data
+      - ./data/assets:/romm/assets
+      - /mnt/data/media/games/emu:/romm/library
+    restart: unless-stopped
+
+  romm-db:
+    image: mariadb:latest
+    container_name: romm-db
+    restart: unless-stopped
+    environment:
+      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
+      MARIADB_DATABASE: romm
+      MARIADB_USER: romm-user
+      MARIADB_PASSWORD: ${MARIADB_PASSWORD}
+    volumes:
+      - ./data/mysql:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      start_period: 30s
+      start_interval: 10s
+      interval: 10s
+      timeout: 5s
+      retries: 5
