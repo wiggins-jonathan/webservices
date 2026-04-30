@@ -1,6 +1,6 @@
 services:
   tuwunel:
-    image: jevolk/tuwunel:v1.5.1
+    image: jevolk/tuwunel:v1.6.0
     container_name: tuwunel
     ports: ["8448:8008"]  # published port 8448 can't be changed because of federation
     environment:
@@ -11,8 +11,15 @@ services:
       TUWUNEL_TRUSTED_SERVERS: '["matrix.org"]'
       TUWUNEL_NEW_USER_DISPLAYNAME_SUFFIX: ''
       TUWUNEL_SUPPRESS_PUSH_WHEN_ACTIVE: 'true'
-      #TUWUNEL_ALLOW_REGISTRATION: 'true'
-      #TUWUNEL_REGISTRATION_TOKEN: 'this is a secure token' # A registration token is required when registration is allowed.
+      TUWUNEL_WELL_KNOWN__CLIENT: https://matrix.${DOMAIN}
+      TUWUNEL_IDENTITY_PROVIDER__0__BRAND: auth.${DOMAIN}
+      TUWUNEL_IDENTITY_PROVIDER__0__CLIENT_ID: tuwunel
+      TUWUNEL_IDENTITY_PROVIDER__0__CLIENT_SECRET: ${TUWUNEL_IDENTITY_PROVIDER__0__CLIENT_SECRET}
+      TUWUNEL_IDENTITY_PROVIDER__0__CALLBACK_URL: 'https://matrix.${DOMAIN}/_matrix/client/unstable/login/sso/callback/tuwunel'
+      TUWUNEL_IDENTITY_PROVIDER__0__ISSUER_URL: https://auth.${DOMAIN}
+      TUWUNEL_IDENTITY_PROVIDER__0__TRUSTED: 'true'
+      TUWUNEL_IDENTITY_PROVIDER__0__REGISTRATION: 'false'
+      TUWUNEL_IDENTITY_PROVIDER__0__UNIQUE_ID_FALLBACKS: 'false'
       TUWUNEL_LOG: 'debug'
     volumes:
       - ./data:/var/lib/tuwunel
