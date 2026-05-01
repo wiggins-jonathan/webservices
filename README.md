@@ -2,20 +2,20 @@
 
 ## Services
 - [docker](https://www.docker.com)
-- [adguard-home](https://adguard.com/en/adguard-home/overview.html)
-- [authelia](https://www.authelia.com)
 - [lldap](https://github.com/nitnelave/lldap)
+- [pocket-id](https://pocket-id.org)
 - [vaultwarden](https://github.com/dani-garcia/vaultwarden)
-- [ntfy](https://ntfy.sh)
-- [watchtower](https://containrrr.dev/watchtower)
 - [gatus](https://gatus.io)
 - [navidrome](https://www.navidrome.org)
 - [jellyfin](https://jellyfin.org)
-- [owncloud](https://owncloud.com/infinite-scale)
+- [immich](https://immich.app)
+- [romm](https://romm.app)
+- [RustiCal](https://lennart-k.github.io/rustical)
+- [tuwunel](https://matrix-construct.github.io/tuwunel)
 
-Secrets are managed with [sops](https://github.com/getsops/sops)
+Secrets encrypted by [sops](https://github.com/getsops/sops) & passed into
+docker-compose files as environment variables from a .env file.
 
 ## Installation
 - Clone repo
-- Replace the .env file with one of your own.
-- `docker compose up -d`
+- Execute `deploy.sh`
