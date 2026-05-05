@@ -1,6 +1,6 @@
 services:
   tuwunel:
-    image: jevolk/tuwunel:v1.6.0
+    image: jevolk/tuwunel:v1.6.1
     container_name: tuwunel
     ports: ["8448:8008"]  # published port 8448 can't be changed because of federation
     environment:
@@ -18,7 +18,7 @@ services:
       TUWUNEL_IDENTITY_PROVIDER__0__CALLBACK_URL: 'https://matrix.${DOMAIN}/_matrix/client/unstable/login/sso/callback/tuwunel'
       TUWUNEL_IDENTITY_PROVIDER__0__ISSUER_URL: https://auth.${DOMAIN}
       TUWUNEL_IDENTITY_PROVIDER__0__TRUSTED: 'true'
-      TUWUNEL_IDENTITY_PROVIDER__0__REGISTRATION: 'false'
+      TUWUNEL_IDENTITY_PROVIDER__0__REGISTRATION: 'true'
       TUWUNEL_IDENTITY_PROVIDER__0__UNIQUE_ID_FALLBACKS: 'false'
       TUWUNEL_LOG: 'debug'
     volumes:
