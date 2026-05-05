@@ -1,6 +1,6 @@
 services:
   grampsweb: &grampsweb
-    image: ghcr.io/gramps-project/grampsweb:26.4.1
+    image: ghcr.io/gramps-project/grampsweb:26.5.0
     container_name: grampsweb
     depends_on: [grampsweb_redis]
     ports: ["5000:5000"]
