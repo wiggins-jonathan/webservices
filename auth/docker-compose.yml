@@ -26,7 +26,7 @@ services:
     restart: unless-stopped
 
   authelia:
-    image: authelia/authelia:4.39.19
+    image: authelia/authelia:4.39.20
     container_name: authelia
     depends_on: [lldap]
     environment:
@@ -47,7 +47,7 @@ services:
     restart: unless-stopped
 
   pocketid:
-    image: ghcr.io/pocket-id/pocket-id:v2.8.0
+    image: ghcr.io/pocket-id/pocket-id:v2.9.0
     container_name: pocketid
     depends_on: [lldap]
     ports: ["1411:1411"]

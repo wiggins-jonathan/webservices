@@ -1,6 +1,6 @@
 services:
   tuwunel:
-    image: jevolk/tuwunel:v1.7.0
+    image: jevolk/tuwunel:v1.7.1
     container_name: tuwunel
     ports: ["8448:8008"]  # published port 8448 can't be changed because of federation
     environment:
@@ -34,7 +34,7 @@ services:
     restart: unless-stopped
 
   gvoice-bridge:
-    image: dock.mau.dev/mautrix/gvoice:v0.1.2
+    image: dock.mau.dev/mautrix/gvoice:v26.05
     container_name: gvoice-bridge
     depends_on: [tuwunel]
     volumes:
