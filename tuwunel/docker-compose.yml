@@ -1,6 +1,6 @@
 services:
   tuwunel:
-    image: jevolk/tuwunel:v1.8.1
+    image: jevolk/tuwunel:v1.8.2
     container_name: tuwunel
     ports: ["8448:8008"]  # published port 8448 can't be changed because of federation
     environment:
@@ -26,7 +26,7 @@ services:
     restart: unless-stopped
 
   instagram-bridge:
-    image: dock.mau.dev/mautrix/meta:v0.5.3
+    image: dock.mau.dev/mautrix/meta:v0.2607.0
     container_name: instagram-bridge
     depends_on: [tuwunel]
     volumes:
