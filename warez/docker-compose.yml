@@ -22,7 +22,7 @@ services:
     <<: *restart
 
   deluge:
-    image: linuxserver/deluge:2.2.0-r1-ls348
+    image: linuxserver/deluge:2.2.0-ls381
     container_name: deluge
     ports:
       - "8112:8112"   # web ui
