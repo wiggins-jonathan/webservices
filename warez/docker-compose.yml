@@ -101,3 +101,15 @@ services:
     volumes:
       - ./audiobookrequest:/config
     <<: *restart
+
+  profilarr:  # video quality config
+    image: ghcr.io/dictionarry-hub/profilarr:2.0.9
+    container_name: profilarr
+    depends_on: [sonarr, radarr]
+    ports: ["6868:6868"]
+    environment:
+      <<: *env
+      AUTH: off
+    volumes:
+      - ./profilarr:/config
+    <<: *restart
