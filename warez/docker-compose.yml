@@ -68,14 +68,15 @@ services:
       - ./prowlarr:/config
     <<: *restart
 
-  jellyseer:  # requests
-    image: fallenbagel/jellyseerr:preview-OIDC
-    container_name: jellyseer
+  seerr:  # watch requests
+    image: seerr/seerr:preview-new-oidc
+    container_name: seerr
     ports: ["5055:5055"]
     environment:
       <<: *env
     volumes:
-      - ./jellyseer:/app/config
+      - ./seerr:/app/config
+    <<: *restart
 
   audiobookshelf:
     image: ghcr.io/advplyr/audiobookshelf:2.30.0
