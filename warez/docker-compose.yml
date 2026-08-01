@@ -92,7 +92,7 @@ services:
     <<: *restart
 
   audiobookrequest:
-    image: markbeep/audiobookrequest:1.8.0
+    image: markbeep/audiobookrequest:1.10.6
     container_name: audiobookrequest
     ports: ["13379:8000"]
     environment:
