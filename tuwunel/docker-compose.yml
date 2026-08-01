@@ -25,6 +25,18 @@ services:
       - ./data:/var/lib/tuwunel
     restart: unless-stopped
 
+  matrix-rtc-jwt: # element-call
+    image: ghcr.io/element-hq/lk-jwt-service:latest
+    container_name: matrix-rtc-jwt
+    ports: ["8082:8081"]
+    environment:
+      LIVEKIT_JWT_BIND: :8081
+      LIVEKIT_URL: wss://matrix-rtc.${DOMAIN}
+      LIVEKIT_KEY: ${MRTCKEY}
+      LIVEKIT_SECRET: ${MRTCSECRET}
+      LIVEKIT_FULL_ACCESS_HOMESERVERS: ${DOMAIN}
+    restart: unless-stopped
+
   instagram-bridge:
     image: dock.mau.dev/mautrix/meta:v0.2607.0
     container_name: instagram-bridge
