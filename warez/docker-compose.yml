@@ -79,7 +79,7 @@ services:
     <<: *restart
 
   audiobookshelf:
-    image: ghcr.io/advplyr/audiobookshelf:2.30.0
+    image: ghcr.io/advplyr/audiobookshelf:2.36.0
     container_name: audiobookshelf
     ports: ["13378:80"]
     environment:
