@@ -59,7 +59,7 @@ services:
     <<: *restart
 
   prowlarr: # indexers
-    image: linuxserver/prowlarr:2.4.0.5397-ls154
+    image: linuxserver/prowlarr:2.5.2.5491-ls155
     container_name: prowlarr
     ports: ["9696:9696"]
     environment:
