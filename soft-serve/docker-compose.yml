@@ -1,6 +1,6 @@
 services:
   soft-serve:
-    image: charmcli/soft-serve:v0.11.6
+    image: charmcli/soft-serve:v0.12.0
     container_name: soft-serve
     environment:
       SOFT_SERVE_NAME: git.${DOMAIN}
