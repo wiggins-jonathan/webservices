@@ -15,6 +15,8 @@ services:
     ports: ["8096:8096"]
     environment:
       <<: *env
+      # https://docs.linuxserver.io/images/docker-jellyfin/#intel
+      DOCKER_MODS: linuxserver/mods:jellyfin-opencl-intel
     volumes:
       - ./jellyfin/config:/config
       - /mnt/data/media:/media
