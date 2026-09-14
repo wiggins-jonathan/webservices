@@ -23,6 +23,40 @@ services:
     devices: ["/dev/dri:/dev/dri"]  # intel quicksync hardware acceleration
     <<: *restart
 
+  gluetun:
+    image: qmcgaw/gluetun:v3.41.3
+    container_name: gluetun
+    devices: [/dev/net/tun:/dev/net/tun]
+    cap_add: [NET_ADMIN]
+    security_opt: [no-new-privileges:true]
+    ports: ["9092:9092/tcp"] # qbittorrent
+    environment:
+      <<: *env
+      VPN_SERVICE_PROVIDER: airvpn
+      VPN_TYPE: wireguard
+      WIREGUARD_ADDRESSES: 10.188.142.147/32
+      FIREWALL_VPN_INPUT_PORTS: 39707
+      SERVER_CITIES: Phoenix Arizona
+      WIREGUARD_PRIVATE_KEY: ${WIREGUARD_PRIVATE_KEY}
+      WIREGUARD_PRESHARED_KEY: ${WIREGUARD_PRESHARED_KEY}
+    <<: *restart
+
+  qbittorrent:
+    image: linuxserver/qbittorrent:5.2.3
+    container_name: qbittorrent
+    security_opt: [no-new-privileges:true]
+    depends_on: [gluetun]
+    network_mode: service:gluetun
+    environment:
+      <<: *env
+      WEBUI_PORT: 9092
+      TORRENTING_PORT: 39707
+      DOCKER_MODS: ghcr.io/vuetorrent/vuetorrent-lsio-mod:latest
+    volumes:
+      - ./qbittorrent:/config
+      - /mnt/data/torrents:/data/torrents
+    <<: *restart
+
   deluge:
     image: linuxserver/deluge:2.2.0-ls381
     container_name: deluge
@@ -98,6 +132,7 @@ services:
     container_name: audiobookrequest
     ports: ["13379:8000"]
     environment:
+      <<: *env
       ABR_APP__INIT_ROOT_USERNAME: admin
       ABR_APP__INIT_ROOT_PASSWORD: ${audiobookrequest_password}
     volumes:
