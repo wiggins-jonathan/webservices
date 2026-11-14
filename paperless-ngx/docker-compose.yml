@@ -1,0 +1,53 @@
+services:
+  broker:
+    image: docker.io/library/redis:8
+    container_name: paperless-redis
+    volumes:
+      - ./redis:/data
+    restart: unless-stopped
+
+  paperless:
+    image: ghcr.io/paperless-ngx/paperless-ngx:3.4.2
+    container_name: paperless
+    depends_on: [broker]
+    ports: ["8000:8000"]
+    environment:
+      USERMAP_UID: 1000
+      USERMAP_GID: 100
+      PAPERLESS_REDIS: redis://broker:6379
+      PAPERLESS_SECRET_KEY: ${PAPERLESS_SECRET_KEY}
+      PAPERLESS_CONSUMER_DELETE_DUPLICATES: 'true'
+      PAPERLESS_URL: https://paperless.${DOMAIN}
+      # oidc
+      PAPERLESS_APPS: allauth.socialaccount.providers.openid_connect
+      PAPERLESS_SOCIALACCOUNT_PROVIDERS: >
+        {
+          "openid_connect": {
+            "SCOPE": ["openid", "profile", "email", "groups"],
+            "OAUTH_PKCE_ENABLED": true,
+            "APPS": [
+              {
+                "provider_id": "auth",
+                "name": "auth.${DOMAIN}",
+                "client_id": "649d882f-36cd-4c68-b98b-0f087a269d0c",
+                "secret": "${OIDC_CLIENT_SECRET}",
+                "settings": {
+                  "server_url": "https://auth.${DOMAIN}"
+                }
+              }
+            ]
+          }
+        }
+      PAPERLESS_SOCIAL_AUTO_SIGNUP: 'true'
+      PAPERLESS_SOCIALACCOUNT_ALLOW_SIGNUPS: 'true'
+      PAPERLESS_DISABLE_REGULAR_LOGIN: 'true'
+      PAPERLESS_REDIRECT_LOGIN_TO_SSO: 'true'
+      PAPERLESS_SOCIAL_ACCOUNT_SYNC_GROUPS: 'true'
+      PAPERLESS_SOCIAL_ACCOUNT_SYNC_SUPERUSER_GROUP: paperless_admin
+      PAPERLESS_SOCIAL_ACCOUNT_SYNC_GROUPS_CLAIM: groups
+    volumes:
+      - ./consume:/usr/src/paperless/consume
+      - ./data:/usr/src/paperless/data
+      - ./export:/usr/src/paperless/export
+      - ./media:/usr/src/paperless/media
+    restart: unless-stopped
