@@ -1,0 +1,28 @@
+services:
+  lubelogger:
+    image: ghcr.io/hargata/lubelogger:v1.7.4
+    container_name: lubelogger
+    ports: ["8083:8080"]
+    environment:
+      LC_ALL: en_US.UTF-8
+      LANG: en_US.UTF-8
+      EnableAuth: 'true'
+      OpenIDConfig__Name: auth.${DOMAIN}
+      OpenIDConfig__ClientId: 4cfd6252-5794-4538-a7b7-bfabf0a6641d
+      OpenIDConfig__ClientSecret: ${OIDC_CLIENT_SECRET}
+      OpenIDConfig__AuthURL: https://auth.${DOMAIN}/authorize
+      OpenIDConfig__TokenURL: https://auth.${DOMAIN}/api/oidc/token
+      OpenIDConfig__RedirectURL: https://cars.${DOMAIN}/Login/RemoteAuth
+      OpenIDConfig__LogOutURL: https://auth.${DOMAIN}/api/oidc/end-session
+      OpenIDConfig__UserInfoURL: https://auth.${DOMAIN}/api/oidc/userinfo
+      OpenIDConfig__JwksURL: https://auth.${DOMAIN}/.well-known/jwks.json
+      OpenIDConfig__Scope: 'openid email profile'
+      OpenIDConfig__UsePKCE: 'true'
+      OpenIDConfig__DisableRegularLogin: 'true'
+      OpenIDConfig__DisableRegistration: 'false'
+      OpenIDConfig__AutoGenerateTokens: 'true'
+      EnableRootUserOIDC: 'false'
+    volumes:
+      - ./data:/App/data
+      - ./keys:/root/.aspnet/DataProtection-Keys
+    restart: unless-stopped
