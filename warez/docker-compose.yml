@@ -73,7 +73,7 @@ services:
     <<: *restart
 
   radarr: # movies
-    image: linuxserver/radarr:6.3.0.10514-ls311
+    image: linuxserver/radarr:7.0.3.10918-ls328
     container_name: radarr
     ports: ["7878:7878"]
     environment:
